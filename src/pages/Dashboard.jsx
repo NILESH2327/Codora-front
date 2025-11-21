@@ -1,19 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Cloud, Thermometer, Droplets, Wind, TrendingUp, TrendingDown, Award, FileText } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getweekday } from '../lib/actions/weather';
 
 const Dashboard = () => {
   const { t } = useLanguage();
+  const [Weather, setWeather] = useState();
 
-  const weatherData = {
-    current: { temp: 28, humidity: 75, windSpeed: 12, condition: 'Partly Cloudy' },
-    forecast: [
-      { day: 'Today', high: 32, low: 24, condition: 'Sunny', icon: '☀️' },
-      { day: 'Tomorrow', high: 30, low: 23, condition: 'Cloudy', icon: '☁️' },
-      { day: 'Wed', high: 29, low: 22, condition: 'Rain', icon: '🌧️' },
-      { day: 'Thu', high: 31, low: 25, condition: 'Sunny', icon: '☀️' },
-    ],
-  };
+  useEffect(() => {
+    const getWeatherData = async (location) => {
+      const apiKey = import.meta.env.WEATHER_API_KEY;
+      const url = `http://api.weatherapi.com/v1/forecast.json?key=748c922b6b124c14ad305356252111&q=${location}&days=4&aqi=no&alerts=no`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Failed to fetch weather data");
+        }
+        const data = await response.json();
+        if (data) {
+          // Ceil current
+          data.current.temp_c = Math.ceil(data.current.temp_c);
+          data.current.feelslike_c = Math.ceil(data.current.feelslike_c);
+          data.current.humidity = Math.ceil(data.current.humidity);
+          data.current.wind_kph = Math.ceil(data.current.wind_kph);
+
+          // Ceil forecast temps
+          data.forecast.forecastday = data.forecast.forecastday.map(day => ({
+            ...day,
+            day: {
+              ...day.day,
+              maxtemp_c: Math.ceil(day.day.maxtemp_c),
+              mintemp_c: Math.ceil(day.day.mintemp_c),
+            },
+          }));
+
+          setWeather(data);
+        }
+
+        console.log("Weather Data:", data);
+        return data;
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+        return null;
+      }
+    };
+
+    getWeatherData("Jhansi").then(data => setWeather(data));
+  }, []);
 
   const marketPrices = [
     { crop: 'Rice', price: '₹2,850', change: '+5.2%', trend: 'up' },
@@ -51,6 +84,10 @@ const Dashboard = () => {
     },
   ];
 
+  if (!Weather) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,39 +110,41 @@ const Dashboard = () => {
               <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white mb-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold mb-1">Kochi, Kerala</h3>
-                    <p className="text-blue-100">{weatherData.current.condition}</p>
+                    <h3 className="text-lg font-semibold mb-1">{Weather.location.name}, {Weather.location.country}</h3>
+                    <p className="text-blue-100">{Weather.current.condition.text}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-4xl font-bold">{weatherData.current.temp}°C</div>
+                    <div className="text-4xl font-bold">{Weather.current.temp_c}°C</div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-blue-400">
                   <div className="flex items-center space-x-2">
                     <Thermometer className="h-4 w-4" />
-                    <span className="text-sm">Feels like 30°C</span>
+                    <span className="text-sm">Feels like {Weather.current.feelslike_c}°C</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Droplets className="h-4 w-4" />
-                    <span className="text-sm">{weatherData.current.humidity}% Humidity</span>
+                    <span className="text-sm">{Weather.current.humidity}% Humidity</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Wind className="h-4 w-4" />
-                    <span className="text-sm">{weatherData.current.windSpeed} km/h</span>
+                    <span className="text-sm">{Weather.current.wind_kph} km/h</span>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {weatherData.forecast.map((day, index) => (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-center items-center">
+                {Weather.forecast.forecastday.map((day, index) => (
                   <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
-                    <p className="font-semibold text-gray-900 mb-2">{day.day}</p>
-                    <div className="text-2xl mb-2">{day.icon}</div>
-                    <p className="text-sm text-gray-600 mb-1">{day.condition}</p>
+                    <p className="font-semibold text-gray-900 mb-2">{getweekday(day.date)}</p>
+                    <div className="text-2xl mb-2 w-fit mx-auto">
+                      <img src={day.day.condition.icon} alt="" />
+                    </div>
+                    <p className="text-sm text-gray-600 mb-1">{day.day.condition.text}</p>
                     <div className="text-sm">
-                      <span className="font-semibold">{day.high}°</span>
-                      <span className="text-gray-500 ml-1">{day.low}°</span>
+                      <span className="font-semibold">{day.day.maxtemp_c}°</span>
+                      <span className="text-gray-500 ml-1">{day.day.mintemp_c}°</span>
                     </div>
                   </div>
                 ))}
@@ -143,12 +182,10 @@ const Dashboard = () => {
                   </tbody>
                 </table>
               </div>
-
             </div>
           </div>
 
           <div className="space-y-8">
-
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <Award className="h-5 w-5 text-yellow-600 mr-2" />
@@ -182,7 +219,6 @@ const Dashboard = () => {
                   </div>
                 ))}
               </div>
-
             </div>
           </div>
 

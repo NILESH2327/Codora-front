@@ -1,17 +1,49 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Mic, MicOff } from "lucide-react";
+import { Send, Bot, User, Mic, MicOff, Volume2 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
+import { getBotResponse } from "../lib/actions/chatbot";
 
 const Chatbot = () => {
   const { t, language } = useLanguage();
+
+  // ---------------------------
+  // 🎤  Voice Input Setup
+  // ---------------------------
+  const recognition = new window.webkitSpeechRecognition();
+  recognition.lang = "en-IN"; // Malayalam
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  const startListening = () => {
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const text = event.results[0][0].transcript;
+      setInputText(text); // put spoken text into input
+    };
+
+    recognition.onerror = () => {
+      alert("Microphone error. Please try again.");
+    };
+  };
+
+  // ---------------------------
+  // 🔊 Voice Output Function
+  // ---------------------------
+  const speak = (text) => {
+    const speech = new SpeechSynthesisUtterance();
+    speech.text = text;
+    speech.lang = "en-IN"; // Malayalam voice output
+    window.speechSynthesis.speak(speech);
+  };
 
   const [messages, setMessages] = useState([
     {
       id: "1",
       text:
         language === "en"
-          ? "Hello! I'm your AI farming assistant. Ask me anything about crops, weather, diseases, or farming techniques in Kerala."
-          : "ഹലോ! ഞാൻ നിങ്ങളുടെ AI കൃഷി സഹായിയാണ്. കേരളത്തിലെ വിളകൾ, കാലാവസ്ഥ, രോഗങ്ങൾ, അല്ലെങ്കിൽ കൃഷി സാങ്കേതികവിദ്യകൾ എന്നിവയെക്കുറിച്ച് എന്തും ചോദിക്കുക.",
+          ? "Hello! I'm your AI farming assistant. Ask anything about crops, weather, or Kerala farming."
+          : "ഹലോ! ഞാൻ നിങ്ങളുടെ AI കൃഷി സഹായിയാണ്. കേരളത്തിലെ കൃഷി, കാലാവസ്ഥ, രോഗങ്ങൾ എന്നിവയെക്കുറിച്ച് എന്തും ചോദിക്കൂ.",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -32,7 +64,10 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  // ---------------------------
+  // 💬 Send Message
+  // ---------------------------
+  const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
     const userMessage = {
@@ -46,52 +81,27 @@ const Chatbot = () => {
     setInputText("");
     setIsTyping(true);
 
-    // Fake AI typing delay
-    setTimeout(() => {
-      const botResponse = {
-        id: (Date.now() + 1).toString(),
-        text: getBotResponse(inputText),
-        sender: "bot",
-        timestamp: new Date(),
-      };
+    const botText = await getBotResponse(inputText);
 
-      setMessages((prev) => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 2000);
+    const botResponse = {
+      id: (Date.now() + 1).toString(),
+      text: botText,
+      sender: "bot",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, botResponse]);
+    setIsTyping(false);
+
+    speak(botText); // 🔊 Auto speak bot reply
   };
 
-  const getBotResponse = (input) => {
-    const lower = input.toLowerCase();
-
-    if (language === "ml") {
-      if (lower.includes("നെല്ല്") || lower.includes("rice")) {
-        return "നെല്ല് കൃഷിക്ക് കേരളത്തിലെ കാലാവസ്ഥ അനുകൂലമാണ്. മൺസൂൺ സമയത്ത് നടീൽ നടത്തുക, ജൈവ വളപ്രയോഗം നടത്തുക.";
-      }
-      return "കൂടുതൽ വിവരങ്ങൾ ആവശ്യമാണ്. ദയവായി വ്യക്തമാക്കിയിട്ട് ചോദിക്കുക.";
-    }
-
-    if (lower.includes("rice") || lower.includes("paddy")) {
-      return "Rice grows best in monsoon. Maintain water control and use resistant varieties.";
-    }
-
-    if (lower.includes("coconut")) {
-      return "Coconut palms need regular watering and neem-based pest control.";
-    }
-
-    if (lower.includes("pepper")) {
-      return "Black pepper requires good drainage and organic compost.";
-    }
-
-    if (lower.includes("weather") || lower.includes("rain")) {
-      return "Kerala receives heavy monsoon rainfall. Ensure proper drainage.";
-    }
-
-    return "Ask me about crops, weather, diseases, fertilizers, and Kerala farming.";
-  };
-
+  // ---------------------------
+  // 🎤 Toggle Mic
+  // ---------------------------
   const toggleVoiceInput = () => {
+    if (!isListening) startListening();
     setIsListening(!isListening);
-    // Add speech-to-text later
   };
 
   const quickQuestions = [
@@ -114,20 +124,16 @@ const Chatbot = () => {
         </div>
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+
           {/* Messages */}
           <div className="h-96 overflow-y-auto p-6 space-y-4">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${
-                  msg.sender === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div
-                  className={`flex items-start space-x-2 max-w-xs lg:max-w-md ${
-                    msg.sender === "user"
-                      ? "flex-row-reverse space-x-reverse"
-                      : ""
+                <div className={`flex items-start space-x-2 max-w-xs lg:max-w-md ${
+                    msg.sender === "user" ? "flex-row-reverse space-x-reverse" : ""
                   }`}
                 >
                   <div
@@ -152,9 +158,7 @@ const Chatbot = () => {
                     <p className="text-sm">{msg.text}</p>
                     <p
                       className={`text-xs mt-1 ${
-                        msg.sender === "user"
-                          ? "text-green-100"
-                          : "text-gray-500"
+                        msg.sender === "user" ? "text-green-100" : "text-gray-500"
                       }`}
                     >
                       {msg.timestamp.toLocaleTimeString([], {
@@ -176,14 +180,8 @@ const Chatbot = () => {
                   <div className="p-3 rounded-lg bg-gray-100">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.1s" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.2s" }}
-                      ></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                     </div>
                   </div>
                 </div>
@@ -195,9 +193,7 @@ const Chatbot = () => {
 
           {/* Quick Questions */}
           <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-            <p className="text-sm font-medium text-gray-700 mb-3">
-              Quick Questions:
-            </p>
+            <p className="text-sm font-medium text-gray-700 mb-3">Quick Questions:</p>
             <div className="flex flex-wrap gap-2">
               {quickQuestions.map((q, i) => (
                 <button
@@ -227,21 +223,17 @@ const Chatbot = () => {
                 className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
               />
 
+              {/* 🎤 Voice Input Button */}
               <button
                 onClick={toggleVoiceInput}
                 className={`p-3 rounded-lg ${
-                  isListening
-                    ? "bg-red-600 text-white"
-                    : "bg-gray-200 text-gray-600"
+                  isListening ? "bg-red-600 text-white" : "bg-gray-200 text-gray-600"
                 }`}
               >
-                {isListening ? (
-                  <MicOff className="h-5 w-5" />
-                ) : (
-                  <Mic className="h-5 w-5" />
-                )}
+                {isListening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
               </button>
 
+              {/* Send Button */}
               <button
                 onClick={handleSendMessage}
                 disabled={!inputText.trim()}
@@ -252,6 +244,7 @@ const Chatbot = () => {
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>

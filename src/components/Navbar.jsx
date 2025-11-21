@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Sprout, Menu, X, Globe } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -7,6 +7,14 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token);
+  }, []);
+
 
   const navItems = [
     { path: "/", label: t("home") },
@@ -37,11 +45,10 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? "bg-green-100 text-green-700"
-                    : "text-gray-600 hover:text-green-600 hover:bg-green-50"
-                }`}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item.path)
+                  ? "bg-green-100 text-green-700"
+                  : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                  }`}
               >
                 {item.label}
               </Link>
@@ -57,12 +64,17 @@ const Navbar = () => {
               <Globe className="h-4 w-4" />
               <span>{language === "en" ? "മലയാളം" : "English"}</span>
             </button>
-            <button className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors">
-              {t("login")}
-            </button>
-            <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-              {t("getStarted")}
-            </button>
+            {isLogged ?
+              <button className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors">
+                {t("Profile")}
+              </button> : <>
+                <button className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors">
+                  {t("login")}
+                </button>
+                <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                  {t("getStarted")}
+                </button>
+              </>}
           </div>
 
           {/* Mobile Menu Button */}
@@ -85,11 +97,10 @@ const Navbar = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActive(item.path)
-                      ? "bg-green-100 text-green-700"
-                      : "text-gray-600 hover:text-green-600 hover:bg-green-50"
-                  }`}
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive(item.path)
+                    ? "bg-green-100 text-green-700"
+                    : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                    }`}
                 >
                   {item.label}
                 </Link>

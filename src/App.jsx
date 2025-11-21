@@ -9,11 +9,17 @@ import Dashboard from './pages/Dashboard';
 import Upload from './pages/Upload';
 import Chatbot from './pages/Chatbot';
 import { LanguageProvider } from './contexts/LanguageContext';
+import ProfilePage from './pages/ProfilePage';
+import ActivityPage from './pages/ActivityPage';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+
   return (
     <LanguageProvider>
       <Router>
+        <ToastContainer position="bottom-right" />
         <div className="min-h-screen bg-gray-50 flex flex-col">
           <Navbar />
           <main className="flex-1">
@@ -24,8 +30,10 @@ function App() {
               <Route path="/chatbot" element={<Chatbot />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/activity" element={<ActivityPage />}
+              />
 
-    
             </Routes>
 
           </main>
