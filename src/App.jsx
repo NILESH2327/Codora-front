@@ -13,6 +13,8 @@ import ProfilePage from './pages/ProfilePage';
 import ActivityPage from './pages/ActivityPage';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FarmerProfile from './pages/FarmerProfile';
+
 
 function App() {
 
@@ -31,8 +33,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/activity" element={<ActivityPage />}
-              />
+              <Route path="/activity" element={<ActivityPage />}/>                           
+              <Route path="/farmer-profile" element={<FarmerProfile />} />
 
             </Routes>
 

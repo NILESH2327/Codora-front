@@ -220,6 +220,26 @@ const Dashboard = () => {
                 ))}
               </div>
             </div>
+
+            {/* ✅ NEW — Farmer Profile Card */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <FileText className="h-5 w-5 text-green-600 mr-2" />
+                Farmer Profile
+              </h2>
+
+              <p className="text-sm text-gray-600 mb-4">
+                Update your land information, crops, irrigation, and soil details.
+              </p>
+
+              <a
+                href="/farmer-profile"
+                className="block text-center bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-semibold transition-all"
+              >
+                Go to Profile
+              </a>
+            </div>
+
           </div>
 
         </div>

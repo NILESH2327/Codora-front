@@ -26,7 +26,7 @@ export const getBotResponse = async (input) => {
     //     return "Kerala receives heavy monsoon rainfall. Ensure proper drainage.";
     // }
 
-    const res = await postJSON('/advisory/generate', { farmerId: "691f1d24a59d8d0b0578d40c", question: input });
+    const res = await postJSON('/advisory/generate', { farmerId: "69202e7021846d23c5ed8fd5", question: input });
     console.log("AI Response:", res);
     return res.answer;
 };
