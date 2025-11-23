@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Sprout, Menu, X, Globe } from "lucide-react";
@@ -9,13 +10,43 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
+=======
+import React, { use, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Sprout, Menu, X, Globe } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { logout } from "../lib/actions/authActions";
+
+const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const navigator = window.navigator; 
+  const location = useLocation();
+  const { language, setLanguage, t } = useLanguage();
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {    
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setIsLogged(false);
+    //take me back to home page
+    window.location.href = "/";  
+  }
+
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
 
   const navItems = [
     { path: "/", label: t("home") },
     { path: "/dashboard", label: t("dashboard") },
     { path: "/upload", label: t("upload") },
     { path: "/chatbot", label: t("chatbot") },
+<<<<<<< HEAD
     { path: "/knowledge", label: "Knowledge Engine" },
+=======
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -40,15 +71,39 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
+<<<<<<< HEAD
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive(item.path)
                     ? "bg-green-100 text-green-700"
                     : "text-gray-600 hover:text-green-600 hover:bg-green-50"
                 }`}
+=======
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item.path)
+                  ? "bg-green-100 text-green-700"
+                  : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                  }`}
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
               >
                 {item.label}
               </Link>
             ))}
+<<<<<<< HEAD
+=======
+            {
+              isLogged && (
+                <Link
+                key="/profile"
+                to="/farmer-profile"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/farmer-profile")
+                  ? "bg-green-100 text-green-700"
+                  : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                  }`}
+              >
+                {t("Profile")}
+              </Link>
+              )
+            }
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
           </div>
 
           {/* Language Toggle & Auth Buttons */}
@@ -60,12 +115,26 @@ const Navbar = () => {
               <Globe className="h-4 w-4" />
               <span>{language === "en" ? "മലയാളം" : "English"}</span>
             </button>
+<<<<<<< HEAD
             <button className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors">
               {t("login")}
             </button>
             <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
               {t("getStarted")}
             </button>
+=======
+            {isLogged ?
+              <button onClick={handleLogout} className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors">
+                {t("Logout")}
+              </button> : <>
+                <Link to={'/login'}  className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors">
+                  {t("login")}
+                </Link>
+                {/* <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                  {t("getStarted")}
+                </button> */}
+              </>}
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
           </div>
 
           {/* Mobile Menu Button */}
@@ -88,11 +157,18 @@ const Navbar = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsMenuOpen(false)}
+<<<<<<< HEAD
                   className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                     isActive(item.path)
                       ? "bg-green-100 text-green-700"
                       : "text-gray-600 hover:text-green-600 hover:bg-green-50"
                   }`}
+=======
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive(item.path)
+                    ? "bg-green-100 text-green-700"
+                    : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                    }`}
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
                 >
                   {item.label}
                 </Link>

@@ -1,13 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import {
   Upload as UploadIcon,
   Camera,
   FileImage,
   CheckCircle,
   AlertCircle,
-  Loader
-} from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+  Loader,
+} from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Upload = () => {
   const { t } = useLanguage();
@@ -19,74 +19,84 @@ const Upload = () => {
 
   const fileInputRef = useRef(null);
 
+  // Select file
   const handleFileSelect = (file) => {
     setSelectedFile(file);
     setAnalysisResult(null);
 
     const reader = new FileReader();
-    reader.onload = (e) => {
-      setPreviewUrl(e.target?.result);
-    };
+    reader.onload = (e) => setPreviewUrl(e.target.result);
     reader.readAsDataURL(file);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleFileSelect(files[0]);
+    if (e.dataTransfer.files.length > 0) {
+      handleFileSelect(e.dataTransfer.files[0]);
     }
   };
 
   const handleFileInputChange = (e) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      handleFileSelect(files[0]);
+    if (e.target.files.length > 0) {
+      handleFileSelect(e.target.files[0]);
     }
   };
 
+  // Real backend analysis (GitHub version)
   const analyzeImage = async () => {
     if (!selectedFile) return;
 
     setIsAnalyzing(true);
+    setAnalysisResult(null);
 
-    // Simulated AI result
-    setTimeout(() => {
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const response = await fetch(
+        "http://localhost:5000/api/advisory/detect-crop-disease",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to analyze image");
+
+      const result = await response.json();
+      setAnalysisResult(result);
+    } catch (err) {
       setAnalysisResult({
-        disease: 'Leaf Blight',
-        confidence: 87,
-        severity: 'Moderate',
-        treatment: [
-          'Remove affected leaves immediately',
-          'Apply copper-based fungicide',
-          'Improve air circulation around plants',
-          'Reduce watering frequency',
-        ],
-        prevention: [
-          'Avoid overhead watering',
-          'Maintain proper plant spacing',
-          'Apply preventive fungicide spray',
-        ],
+        disease: "Network Error",
+        confidence: 0,
+        severity: "Unknown",
+        treatment: [],
+        prevention: ["Error: " + err.message],
       });
-
+    } finally {
       setIsAnalyzing(false);
-    }, 3000);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
+        {/* Title */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('uploadTitle')}</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">{t('uploadSubtitle')}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            {t("uploadTitle")}
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            {t("uploadSubtitle")}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
           {/* Upload Section */}
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Upload Image</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Upload Image
+            </h2>
 
             {!previewUrl ? (
               <div
@@ -106,12 +116,12 @@ const Upload = () => {
                 </p>
 
                 <div className="flex justify-center space-x-4">
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                  <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     <Camera className="h-4 w-4" />
                     <span>Take Photo</span>
                   </button>
 
-                  <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                  <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
                     <FileImage className="h-4 w-4" />
                     <span>Choose File</span>
                   </button>
@@ -122,7 +132,7 @@ const Upload = () => {
                 <div className="relative">
                   <img
                     src={previewUrl}
-                    alt="Uploaded crop"
+                    alt="crop"
                     className="w-full h-64 object-cover rounded-lg"
                   />
 
@@ -132,7 +142,7 @@ const Upload = () => {
                       setSelectedFile(null);
                       setAnalysisResult(null);
                     }}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
                   >
                     ×
                   </button>
@@ -140,16 +150,18 @@ const Upload = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">{selectedFile?.name}</p>
+                    <p className="font-medium text-gray-900">
+                      {selectedFile?.name}
+                    </p>
                     <p className="text-sm text-gray-500">
-                      {selectedFile && (selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                      {(selectedFile?.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
 
                   <button
                     onClick={analyzeImage}
                     disabled={isAnalyzing}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center space-x-2"
                   >
                     {isAnalyzing ? (
                       <>
@@ -171,48 +183,58 @@ const Upload = () => {
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              onChange={handleFileInputChange}
               className="hidden"
+              onChange={handleFileInputChange}
             />
           </div>
 
           {/* Results Section */}
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Analysis Results</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Analysis Results
+            </h2>
 
             {!analysisResult && !isAnalyzing && (
               <div className="text-center py-12">
                 <FileImage className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">Upload an image to get AI-powered analysis</p>
+                <p className="text-gray-500">
+                  Upload an image to get AI-powered analysis
+                </p>
               </div>
             )}
 
             {isAnalyzing && (
               <div className="text-center py-12">
-                <Loader className="h-16 w-16 text-green-600 mx-auto mb-4 animate-spin" />
+                <Loader className="h-16 w-16 text-green-600 mx-auto animate-spin mb-4" />
                 <p className="text-gray-600">Analyzing your crop image...</p>
-                <p className="text-sm text-gray-500 mt-2">This may take a few moments</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  This may take a moment
+                </p>
               </div>
             )}
 
             {analysisResult && (
               <div className="space-y-6">
-                
-                {/* Disease Section */}
-                <div className="border border-orange-200 rounded-lg p-4 bg-orange-50">
+                {/* Disease */}
+                <div className="border border-orange-200 bg-orange-50 p-4 rounded-lg">
                   <div className="flex items-center space-x-2 mb-2">
                     <AlertCircle className="h-5 w-5 text-orange-600" />
-                    <h3 className="font-semibold text-orange-900">Disease Detected</h3>
+                    <h3 className="font-semibold text-orange-900">
+                      Disease Detected
+                    </h3>
                   </div>
-                  <p className="text-lg font-bold text-orange-900 mb-1">
+
+                  <p className="text-lg font-bold text-orange-900">
                     {analysisResult.disease}
                   </p>
+
                   <p className="text-sm text-orange-700">
-                    Confidence: {analysisResult.confidence}% | Severity: {analysisResult.severity}
+                    Confidence: {analysisResult.confidence}% | Severity:{" "}
+                    {analysisResult.severity}
                   </p>
                 </div>
 
-                {/* Treatments */}
+                {/* Treatment */}
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
@@ -220,10 +242,10 @@ const Upload = () => {
                   </h3>
 
                   <ul className="space-y-2">
-                    {analysisResult.treatment.map((step, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full mt-0.5">
-                          {index + 1}
+                    {analysisResult.treatment?.map((step, idx) => (
+                      <li key={idx} className="flex items-start space-x-2">
+                        <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-0.5">
+                          {idx + 1}
                         </span>
                         <span className="text-gray-700 text-sm">{step}</span>
                       </li>
@@ -233,21 +255,21 @@ const Upload = () => {
 
                 {/* Prevention */}
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Prevention Tips</h3>
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    Prevention Tips
+                  </h3>
 
                   <ul className="space-y-2">
-                    {analysisResult.prevention.map((tip, index) => (
-                      <li key={index} className="flex items-start space-x-2">
+                    {analysisResult.prevention?.map((tip, idx) => (
+                      <li key={idx} className="flex items-start space-x-2">
                         <span className="w-2 h-2 bg-blue-400 rounded-full mt-2"></span>
                         <span className="text-gray-700 text-sm">{tip}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-
               </div>
             )}
-
           </div>
         </div>
       </div>

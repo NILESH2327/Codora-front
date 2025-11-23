@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import { Cloud, Thermometer, Droplets, Wind, TrendingUp, TrendingDown, Award, FileText } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -14,6 +15,57 @@ const Dashboard = () => {
       { day: 'Thu', high: 31, low: 25, condition: 'Sunny', icon: '☀️' },
     ],
   };
+=======
+import React, { useEffect, useState } from 'react';
+import { Cloud, Thermometer, Droplets, Wind, TrendingUp, TrendingDown, Award, FileText } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { getweekday } from '../lib/actions/weather';
+
+const Dashboard = () => {
+  const { t } = useLanguage();
+  const [Weather, setWeather] = useState();
+
+  useEffect(() => {
+    const getWeatherData = async (location) => {
+      const apiKey = import.meta.env.WEATHER_API_KEY;
+      const url = `http://api.weatherapi.com/v1/forecast.json?key=748c922b6b124c14ad305356252111&q=${location}&days=4&aqi=no&alerts=no`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Failed to fetch weather data");
+        }
+        const data = await response.json();
+        if (data) {
+          // Ceil current
+          data.current.temp_c = Math.ceil(data.current.temp_c);
+          data.current.feelslike_c = Math.ceil(data.current.feelslike_c);
+          data.current.humidity = Math.ceil(data.current.humidity);
+          data.current.wind_kph = Math.ceil(data.current.wind_kph);
+
+          // Ceil forecast temps
+          data.forecast.forecastday = data.forecast.forecastday.map(day => ({
+            ...day,
+            day: {
+              ...day.day,
+              maxtemp_c: Math.ceil(day.day.maxtemp_c),
+              mintemp_c: Math.ceil(day.day.mintemp_c),
+            },
+          }));
+
+          setWeather(data);
+        }
+
+        console.log("Weather Data:", data);
+        return data;
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+        return null;
+      }
+    };
+
+    getWeatherData("Jhansi").then(data => setWeather(data));
+  }, []);
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
 
   const marketPrices = [
     { crop: 'Rice', price: '₹2,850', change: '+5.2%', trend: 'up' },
@@ -51,6 +103,13 @@ const Dashboard = () => {
     },
   ];
 
+<<<<<<< HEAD
+=======
+  if (!Weather) {
+    return <div>Loading...</div>;
+  }
+
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,17 +132,26 @@ const Dashboard = () => {
               <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white mb-6">
                 <div className="flex items-center justify-between">
                   <div>
+<<<<<<< HEAD
                     <h3 className="text-lg font-semibold mb-1">Kochi, Kerala</h3>
                     <p className="text-blue-100">{weatherData.current.condition}</p>
                   </div>
                   <div className="text-right">
                     <div className="text-4xl font-bold">{weatherData.current.temp}°C</div>
+=======
+                    <h3 className="text-lg font-semibold mb-1">{Weather.location.name}, {Weather.location.country}</h3>
+                    <p className="text-blue-100">{Weather.current.condition.text}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-4xl font-bold">{Weather.current.temp_c}°C</div>
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-blue-400">
                   <div className="flex items-center space-x-2">
                     <Thermometer className="h-4 w-4" />
+<<<<<<< HEAD
                     <span className="text-sm">Feels like 30°C</span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -93,10 +161,22 @@ const Dashboard = () => {
                   <div className="flex items-center space-x-2">
                     <Wind className="h-4 w-4" />
                     <span className="text-sm">{weatherData.current.windSpeed} km/h</span>
+=======
+                    <span className="text-sm">Feels like {Weather.current.feelslike_c}°C</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Droplets className="h-4 w-4" />
+                    <span className="text-sm">{Weather.current.humidity}% Humidity</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Wind className="h-4 w-4" />
+                    <span className="text-sm">{Weather.current.wind_kph} km/h</span>
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
                   </div>
                 </div>
               </div>
 
+<<<<<<< HEAD
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {weatherData.forecast.map((day, index) => (
                   <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
@@ -106,6 +186,19 @@ const Dashboard = () => {
                     <div className="text-sm">
                       <span className="font-semibold">{day.high}°</span>
                       <span className="text-gray-500 ml-1">{day.low}°</span>
+=======
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-center items-center">
+                {Weather.forecast.forecastday.map((day, index) => (
+                  <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
+                    <p className="font-semibold text-gray-900 mb-2">{getweekday(day.date)}</p>
+                    <div className="text-2xl mb-2 w-fit mx-auto">
+                      <img src={day.day.condition.icon} alt="" />
+                    </div>
+                    <p className="text-sm text-gray-600 mb-1">{day.day.condition.text}</p>
+                    <div className="text-sm">
+                      <span className="font-semibold">{day.day.maxtemp_c}°</span>
+                      <span className="text-gray-500 ml-1">{day.day.mintemp_c}°</span>
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
                     </div>
                   </div>
                 ))}
@@ -143,12 +236,18 @@ const Dashboard = () => {
                   </tbody>
                 </table>
               </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
             </div>
           </div>
 
           <div className="space-y-8">
+<<<<<<< HEAD
 
+=======
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <Award className="h-5 w-5 text-yellow-600 mr-2" />
@@ -182,8 +281,32 @@ const Dashboard = () => {
                   </div>
                 ))}
               </div>
+<<<<<<< HEAD
 
             </div>
+=======
+            </div>
+
+            {/* ✅ NEW — Farmer Profile Card */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <FileText className="h-5 w-5 text-green-600 mr-2" />
+                Farmer Profile
+              </h2>
+
+              <p className="text-sm text-gray-600 mb-4">
+                Update your land information, crops, irrigation, and soil details.
+              </p>
+
+              <a
+                href="/farmer-profile"
+                className="block text-center bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-semibold transition-all"
+              >
+                Go to Profile
+              </a>
+            </div>
+
+>>>>>>> e2c1bd6bc0e3eb885dfab4a37525386a764a72ed
           </div>
 
         </div>

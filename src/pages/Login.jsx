@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { onLogin } from "../lib/actions/authActions";  
 
 const Login = () => {
   const navigate = useNavigate();
 
-  // State for form inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -23,12 +22,15 @@ const Login = () => {
       const data = await res.json();
 
       if (data.success) {
-        toast.success(data.message); // Success Notification
+        
+        onLogin({ id: data.farmerId, token: data.token });
 
-        // Optional: Redirect to dashboard after login
+        toast.success(data.message);
+
         setTimeout(() => navigate("/dashboard"), 1000);
+
       } else {
-        toast.error(data.message); // Error Notification
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error("Something went wrong!");
