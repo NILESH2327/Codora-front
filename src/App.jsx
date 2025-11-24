@@ -18,36 +18,50 @@ import UpdateProfileForm from './pages/UpdateProfile';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AllPlots from './pages/AllPlots';
+import PlotDetails from './pages/PlotDetails';
+import AddPlot from './pages/AddCrop';
+import VerifyOtp from './pages/VerifyOtp';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
+
   return (
-    <LanguageProvider>
-      <Router>
-        <ToastContainer position="bottom-right" />
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
 
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-          <Navbar />
+      <LanguageProvider>
 
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="/chatbot" element={<Chatbot />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/activity" element={<ActivityPage />}/>                           
-              <Route path="/farmer-profile" element={<FarmerProfile />} />
-              <Route path="/update-profile" element={<UpdateProfileForm />} /> 
-              <Route path="/knowledge" element={<Knowledge />} />
+        <Router>
+          <ToastContainer position="bottom-right" />
 
-            </Routes>
-          </main>
+          <div className="min-h-screen bg-gray-50 flex flex-col">
+            <Navbar />
 
-          <Footer />
-        </div>
-      </Router>
-    </LanguageProvider>
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/upload" element={<Upload />} />
+                <Route path="/chatbot" element={<Chatbot />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/activity" element={<ActivityPage />} />
+                <Route path="/farmer-profile" element={<FarmerProfile />} />
+                <Route path="/update-profile" element={<UpdateProfileForm />} />
+                <Route path="/knowledge" element={<Knowledge />} />
+                <Route path="/plot" element={<AllPlots />} />
+                <Route path="/plot/:id" element={<PlotDetails />} />
+                <Route path="/add-plot" element={<AddPlot />} />
+                <Route path="/verify-otp" element={<VerifyOtp />} />
+
+              </Routes>
+            </main>
+
+            <Footer />
+          </div>
+        </Router>
+      </LanguageProvider>
+    </GoogleOAuthProvider>
   );
 }
 

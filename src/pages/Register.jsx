@@ -4,7 +4,7 @@
 // import { onLogin } from "../lib/actions/authActions";
 
 // const Register = () => {
-//   const [form, setForm] = useState({ name: "", email: "", password: "" });
+//   const [form, setForm] = useState({ name: "", phone: "", password: "" });
 //     const handleChange = (e) =>
 //         setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -41,12 +41,12 @@
 //           </div>
 
 //           <div>
-//             <label className="block text-gray-700 font-semibold mb-1">Email</label>
+//             <label className="block text-gray-700 font-semibold mb-1">phone</label>
 //             <input
-//               type="email"
-//               name="email"
+//               type="phone"
+//               name="phone"
 //               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-//               placeholder="Enter your email"
+//               placeholder="Enter your phone"
 //             />
 //           </div>
 
@@ -61,7 +61,7 @@
 //           </div>
 
 //           <p className="text-sm text-gray-500 text-center">
-//             Check your email after registration.
+//             Check your phone after registration.
 //           </p>
 
 //           <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
@@ -89,6 +89,8 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { isAuthenticated } from "../lib/actions/authActions";
+import VerifyOtp from "./VerifyOtp";
+import GoogleAuth from "../components/GoogleAuth";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -103,7 +105,7 @@ const Register = () => {
 
   // State for form fields
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [phone, setphone] = useState("");
   const [password, setPassword] = useState("");
 
   // Handle register
@@ -114,7 +116,7 @@ const Register = () => {
       const res = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, phone, password }),
       });
 
       const data = await res.json();
@@ -122,9 +124,7 @@ const Register = () => {
 
       if (data.success) {
         toast.success(data.message); //success toast
-
-        // Redirect to login after successful registration
-        setTimeout(() => navigate("/login"), 1000);
+        navigate("/verify-otp", { state: { phone } });
       } else {
         toast.error(data.message); //error toast
       }
@@ -134,6 +134,8 @@ const Register = () => {
   };
 
   return (
+
+
     <div className="min-h-screen flex items-center justify-center bg-green-50 px-4">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
 
@@ -155,13 +157,13 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1">Email</label>
+            <label className="block text-gray-700 font-semibold mb-1">phone</label>
             <input
-              type="email"
+              type="phone"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your phone"
+              value={phone}
+              onChange={(e) => setphone(e.target.value)}
               required
             />
           </div>
@@ -193,8 +195,17 @@ const Register = () => {
           </Link>
         </p>
 
+      
+
+        <GoogleAuth/>
+
       </div>
     </div>
+
+
+
+
+
   );
 };
 

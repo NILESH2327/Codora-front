@@ -6,6 +6,7 @@ import AddCropForm from '../components/AddCrop';
 import { useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../lib/actions/authActions';
 import { toast } from 'react-toastify';
+import PhoneAuth from '../components/PhoneAuth';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -57,7 +58,7 @@ const Dashboard = () => {
       }
     };
 
-    getWeatherData("Kochi").then(data => setWeather(data));
+    getWeatherData("Jhansi").then(data => setWeather(data));
   }, []);
 
   const marketPrices = [
@@ -255,18 +256,9 @@ const Dashboard = () => {
           </div>
 
         </div>
-        <div className="mb-8">
-          <h1>Select the crop to be sown</h1>
-          <form>
-            <select name="crop" id="crop" defaultValue={"Selcet Crop"}>
-              <option value="paddy">Paddy</option>              
-            </select>
-            <button type='submit'>Submit
-            </button>
-            
-          </form>
-        </div>
-         <AddCropForm/>
+        <PhoneAuth/>
+       
+      
       </div>
     </div>
   );

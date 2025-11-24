@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { getJSON, postJSON } from "../api";
 import { Link } from "react-router-dom";
-import { Bell, Droplets, Layers, Leaf, MapPin, Mountain, User } from "lucide-react";
+import { Bell, Droplets, Layers, Leaf, MapPin, Mountain, PlusCircle, User } from "lucide-react";
 
 
 export default function FarmerProfile() {
@@ -147,14 +147,24 @@ export default function FarmerProfile() {
             </div>
 
             {/* Show Plots */}
-            <div
-              // onClick={onShowPlots}
+            <Link
+              to={'/plot'}
               className="cursor-pointer bg-white p-5 rounded-xl shadow hover:shadow-lg transition border border-gray-200"
             >
               <Layers className="text-green-700 w-10 h-10 mb-3" />
               <h3 className="text-xl font-semibold text-gray-800">Show Plots</h3>
               <p className="text-gray-500 text-sm mt-1">See all your farm plots</p>
-            </div>
+            </Link>
+            
+            {/* Add Plots */}
+            <Link
+              to={'/add-plot'}              
+              className="cursor-pointer bg-white p-5 rounded-xl shadow hover:shadow-lg transition border border-gray-200"
+            >
+              <PlusCircle className="text-green-700 w-10 h-10 mb-3" />
+              <h3 className="text-xl font-semibold text-gray-800">Add Plots</h3>
+              <p className="text-gray-500 text-sm mt-1">Add your Plots</p>
+            </Link>
 
           </div>
         </div>

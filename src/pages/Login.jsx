@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { onLogin } from "../lib/actions/authActions";  
+import GoogleAuth from "../components/GoogleAuth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -84,6 +85,7 @@ const Login = () => {
             Register
           </Link>
         </p>
+      <GoogleAuth/>
       </div>
     </div>
   );
