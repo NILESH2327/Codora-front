@@ -14,7 +14,7 @@ import Knowledge from "./pages/Knowledge";
 import ActivityPage from './pages/ActivityPage';
 import FarmerProfile from './pages/FarmerProfile';
 import UpdateProfileForm from './pages/UpdateProfile';
-
+import AdminPanel from './pages/AdminPanel';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +26,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { isAuthenticated } from './lib/actions/authActions';
 import FloatingChatbot from './components/FloatingChatbot';
 import ActivityDashboard from './pages/ActivityDashboard';
+import DetectPest from './pages/PestDetection';
 
 function App() {
   const [isLogged, setIsLogged] = useState(false);
@@ -66,6 +67,10 @@ function App() {
                 <Route path="/add-plot" element={<AddPlot />} />
                 <Route path="/verify-otp" element={<VerifyOtp />} />
                 <Route path="/all-activities" element={<ActivityDashboard />} />
+                <Route path="/admin-panel" element={<AdminPanel />} />
+                <Route path="/pest-detection" element={<DetectPest />} />
+                
+
 
               </Routes>
             </main>

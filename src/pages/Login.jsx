@@ -16,14 +16,7 @@ const Login = () => {
 
     try {
       const data = await postJSON('/auth/login',{ phone, password } );
-      
-      // const res = await fetch("http://localhost:5000/api/auth/login", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ phone, password }),
-      // });
-
-     
+   
 
       if (data.success) {
         

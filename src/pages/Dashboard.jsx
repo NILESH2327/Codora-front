@@ -1,26 +1,63 @@
 import React, { useEffect, useState } from 'react';
-import { Cloud, Thermometer, Droplets, Wind, TrendingUp, TrendingDown, Award, FileText } from 'lucide-react';
+import { Cloud, Thermometer, Droplets, Wind, TrendingUp, TrendingDown, Award, FileText, Microscope, Bug } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getweekday } from '../lib/actions/weather';
 import AddCropForm from '../components/AddCrop';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../lib/actions/authActions';
 import { toast } from 'react-toastify';
 import PhoneAuth from '../components/PhoneAuth';
 import AddActivity from '../components/AddActivity';
+import { postJSON } from '../api';
+import axios from 'axios';
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-    useEffect(() => {
-      console.log(isAuthenticated());
-      if(!isAuthenticated()){
-        toast.error("Please login First");
-        navigate('/login')
-      }   
-    }, [])
+  const [cropTips, setcropTips] = useState([]);
+  const api = axios.create({ baseURL: import.meta.env.VITE_API_BASE });
+  const [marketPrices, setMarketPrices] = useState([]);
+  const [schemes, setSchemes] = useState([]);
   const { t } = useLanguage();
   const [Weather, setWeather] = useState();
+  const fetchData = async () => {
 
+    try {
+      const [mres, sres] = await Promise.all([
+        api.get("/market/all"),
+        api.get("/scheme/all"),
+      ]);
+      if (mres.data.success) setMarketPrices(mres.data.data);
+      if (sres.data.success) setSchemes(sres.data.data);
+    } catch (e) {
+      setError(e.message || "Failed to fetch");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const getTips = async () => {
+    const tips = await postJSON('/advisory/generate-advisory', {});
+    console.log(tips);
+    setcropTips(tips.advisories);
+  }
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log(isAuthenticated());
+    if (!isAuthenticated()) {
+      toast.error("Please login First");
+      navigate('/login')
+    }
+
+
+    getTips();
+    fetchData();
+
+  }, [])
+
+
+
+  // get weather data
   useEffect(() => {
     const getWeatherData = async (location) => {
       const apiKey = import.meta.env.WEATHER_API_KEY;
@@ -62,42 +99,6 @@ const Dashboard = () => {
     getWeatherData("Jhansi").then(data => setWeather(data));
   }, []);
 
-  const marketPrices = [
-    { crop: 'Rice', price: '₹2,850', change: '+5.2%', trend: 'up' },
-    { crop: 'Coconut', price: '₹35', change: '-2.1%', trend: 'down' },
-    { crop: 'Pepper', price: '₹650', change: '+8.7%', trend: 'up' },
-    { crop: 'Cardamom', price: '₹1,200', change: '+3.4%', trend: 'up' },
-    { crop: 'Rubber', price: '₹185', change: '-1.8%', trend: 'down' },
-  ];
-
-  const cropTips = [
-    'Optimal time for rice transplanting is approaching based on weather patterns',
-    'Consider applying organic fertilizer to coconut trees this week',
-    'Monitor pepper plants for signs of quick wilt disease',
-    'Harvest cardamom when pods are 3/4 mature for best quality',
-  ];
-
-  const schemes = [
-    {
-      title: 'PM-KISAN Scheme',
-      description: 'Direct income support of ₹6,000 per year to farmer families',
-      eligibility: 'All landholding farmers',
-      amount: '₹6,000/year',
-    },
-    {
-      title: 'Soil Health Card',
-      description: 'Free soil testing and nutrient management recommendations',
-      eligibility: 'All farmers',
-      amount: 'Free',
-    },
-    {
-      title: 'Crop Insurance',
-      description: 'Protection against crop loss due to natural calamities',
-      eligibility: 'Enrolled farmers',
-      amount: 'Subsidized premium',
-    },
-  ];
-
   if (!Weather) {
     return <div>Loading...</div>;
   }
@@ -111,7 +112,7 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Farmer Dashboard</h1>
           <p className="text-gray-600">Your personalized farming insights and recommendations</p>
         </div>
-      <AddActivity/>
+        <AddActivity />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           <div className="lg:col-span-2">
@@ -166,7 +167,36 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="w-full mb-8 flex flex-col md:flex-row gap-4">
+              <Link
+                to="/upload"
+                className="flex-1 bg-green-50 rounded-xl shadow-lg p-6 mb-8 hover:bg-green-100 transition-colors"
+              >
+                <div className="flex items-center text-xl font-semibold mb-2 text-emerald-800">
+                  <Microscope className="mr-2 h-6 w-6" />
+                  Detect Crop Disease
+                </div>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  Use our AI-powered tool to identify crop diseases from images. Simply upload a photo of the affected
+                  plant, and receive instant analysis and treatment recommendations.
+                </p>
+              </Link>
+
+              <Link
+                to="/pest-detection"
+                className="flex-1 bg-green-100 rounded-xl shadow-lg p-6 mb-8 hover:bg-green-200 transition-colors"
+              >
+                <div className="flex items-center text-xl font-semibold mb-2 text-lime-800">
+                  <Bug className="mr-2 h-6 w-6" />
+                  Pest Detection
+                </div>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  Upload images of your crops to identify pests and receive tailored management advice to protect your yield.
+                </p>
+              </Link>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-6 ">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                 <TrendingUp className="h-6 w-6 text-green-600 mr-2" />
                 {t('marketPrices')}
@@ -182,7 +212,7 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {marketPrices.map((item, index) => (
+                    {marketPrices ? marketPrices.map((item, index) => (
                       <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="py-3 px-4 font-medium text-gray-900">{item.crop}</td>
                         <td className="py-3 px-4 text-gray-700">{item.price}</td>
@@ -193,7 +223,7 @@ const Dashboard = () => {
                           </span>
                         </td>
                       </tr>
-                    ))}
+                    )) : <p>Loading....</p>}
                   </tbody>
                 </table>
               </div>
@@ -208,11 +238,12 @@ const Dashboard = () => {
               </h2>
 
               <div className="space-y-3">
-                {cropTips.map((tip, index) => (
+                {cropTips.length ? cropTips.map((tip, index) => (
                   <div key={index} className="p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
                     <p className="text-sm text-gray-700">{tip}</p>
                   </div>
-                ))}
+                )) : <p>Loading....</p>
+                }
               </div>
             </div>
 
@@ -223,7 +254,7 @@ const Dashboard = () => {
               </h2>
 
               <div className="space-y-4">
-                {schemes.map((scheme, index) => (
+                {schemes ? schemes.map((scheme, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
                     <h3 className="font-semibold text-gray-900 mb-2">{scheme.title}</h3>
                     <p className="text-sm text-gray-600 mb-2">{scheme.description}</p>
@@ -232,7 +263,8 @@ const Dashboard = () => {
                       <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">{scheme.amount}</span>
                     </div>
                   </div>
-                ))}
+                )) :
+                  <p>Loading....</p>}
               </div>
             </div>
 
@@ -258,9 +290,9 @@ const Dashboard = () => {
           </div>
 
         </div>
-        <PhoneAuth/>
-       
-      
+        {/* <PhoneAuth/> */}
+
+
       </div>
     </div>
   );
