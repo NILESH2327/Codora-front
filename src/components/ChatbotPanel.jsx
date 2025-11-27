@@ -2,44 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { Send, Bot, User, Mic, MicOff } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getBotResponse } from "../lib/actions/chatbot";
+import AudioRecorder from "./AudioRecorder";
+
 
 const ChatbotPanel = () => {
   const { t, language } = useLanguage();
-
-  const recognitionRef = useRef(null);
-
-  useEffect(() => {
-    if ("webkitSpeechRecognition" in window) {
-      const rec = new window.webkitSpeechRecognition();
-      rec.lang = "en-IN";
-      rec.continuous = false;
-      rec.interimResults = false;
-      recognitionRef.current = rec;
-    }
-  }, []);
-
-  const startListening = () => {
-    const recognition = recognitionRef.current;
-    if (!recognition) return;
-
-    recognition.start();
-    recognition.onresult = (event) => {
-      const text = event.results[0][0].transcript;
-      setInputText(text);
-    };
-    recognition.onerror = () => {
-      alert("Microphone error. Please try again.");
-    };
-  };
-
-  const speak = (text , language) => {
-    const speech = new SpeechSynthesisUtterance();
-    speech.text = text;
-    speech.lang = `${language}-IN`;
-    window.speechSynthesis.speak(speech);
-  };
-
-  speak("കേരളത്തിൽ നെല്ല് നടാൻ ഏറ്റവും അനുയോജ്യമായ സമയം ഏതാണ്?", "ml");
 
   const [messages, setMessages] = useState([
     {
@@ -62,7 +29,6 @@ const ChatbotPanel = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [hasAskedQuestion, setHasAskedQuestion] = useState(false);
-
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -113,7 +79,7 @@ const ChatbotPanel = () => {
       console.log("Bot response data:", botResponseData);
 
       setMessages((prev) => [...prev, botResponse]);
-      speak(botResponseData.answer, botResponseData.language || language);
+      speak(`${botResponseData.answer}, ${botResponseData.steps.join(" ")}`, botResponseData.language || language);
     } catch (error) {
       console.error("Error getting bot response:", error);
       setMessages((prev) => [
@@ -261,12 +227,8 @@ const ChatbotPanel = () => {
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-xs"
           />
 
-          <button
-            onClick={toggleVoiceInput}
-            className={`p-2 rounded-lg ${isListening ? "bg-red-600 text-white" : "bg-gray-200 text-gray-600"}`}
-          >
-            {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-          </button>
+          <AudioRecorder  setMessage={setInputText} setProcessing={setIsTyping}/>
+          {/* <AudioReco  setMessage={setMessage} seProcessing={setIsTyping}/> */}
 
           <button
             onClick={handleSendMessage}

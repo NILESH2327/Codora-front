@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Cloud, Thermometer, Droplets, Wind, TrendingUp, TrendingDown, Award, FileText, Microscope, Bug } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getweekday } from '../lib/actions/weather';
-import AddCropForm from '../components/AddCrop';
+
 import { Link, useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../lib/actions/authActions';
 import { toast } from 'react-toastify';
-import PhoneAuth from '../components/PhoneAuth';
+
 import AddActivity from '../components/AddActivity';
 import { postJSON } from '../api';
 import axios from 'axios';
+import MarketTrends from '../components/MarketTrends';
 
 const Dashboard = () => {
   const [cropTips, setcropTips] = useState([]);
@@ -61,7 +62,7 @@ const Dashboard = () => {
   useEffect(() => {
     const getWeatherData = async (location) => {
       const apiKey = import.meta.env.WEATHER_API_KEY;
-      const url = `http://api.weatherapi.com/v1/forecast.json?key=748c922b6b124c14ad305356252111&q=${location}&days=4&aqi=no&alerts=no`;
+      const url = `https://api.weatherapi.com/v1/forecast.json?key=748c922b6b124c14ad305356252111&q=${location}&days=4&aqi=no&alerts=no`;
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -196,6 +197,28 @@ const Dashboard = () => {
               </Link>
             </div>
 
+            <div className="w-full mb-8 flex flex-col md:flex-row gap-4">
+              <Link
+                to="/market-trends"
+                className="flex-1 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 p-6 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xl font-bold text-green-800">
+                    Market Trends
+                  </span>
+                </div>
+
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Stay updated with the latest market prices for crops in your region and make informed selling decisions.
+                </p>
+              </Link>
+            </div>
+
+
+
+
+            {/* <MarketTrends/> */}
+            {/* 
             <div className="bg-white rounded-xl shadow-lg p-6 ">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
                 <TrendingUp className="h-6 w-6 text-green-600 mr-2" />
@@ -227,7 +250,7 @@ const Dashboard = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="space-y-8">

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-
 import HomePage from './pages/HomePage';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from './pages/Dashboard';
 import Upload from './pages/Upload';
-import Chatbot from './pages/Chatbot';
+// import Chatbot from './pages/Chatbot';
 import Knowledge from "./pages/Knowledge";
 import ActivityPage from './pages/ActivityPage';
 import FarmerProfile from './pages/FarmerProfile';
@@ -27,6 +25,8 @@ import { isAuthenticated } from './lib/actions/authActions';
 import FloatingChatbot from './components/FloatingChatbot';
 import ActivityDashboard from './pages/ActivityDashboard';
 import DetectPest from './pages/PestDetection';
+import MarketTrends from './components/MarketTrends';
+
 
 function App() {
   const [isLogged, setIsLogged] = useState(false);
@@ -55,7 +55,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/upload" element={<Upload />} />
-                <Route path="/chatbot" element={<Chatbot />} />
+                {/* <Route path="/chatbot" element={<Chatbot />} /> */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/activity" element={<ActivityPage />} />
@@ -69,6 +69,8 @@ function App() {
                 <Route path="/all-activities" element={<ActivityDashboard />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="/pest-detection" element={<DetectPest />} />
+                <Route path='/market-trends' element={<MarketTrends/>} />
+               
                 
 
 
