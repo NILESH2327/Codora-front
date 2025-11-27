@@ -7,26 +7,12 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const phone = state?.phone;
-
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputsRef = useRef([]);
-
-  // Timer state for countdown (60 seconds)
-  const [timer, setTimer] = useState(60);
   const [resending, setResending] = useState(false);
-  const [canResend, setCanResend] = useState(false);
+
 
   // Countdown effect
-  useEffect(() => {
-    if (timer === 0) {
-      setCanResend(true);
-      return;
-    }
-    const interval = setInterval(() => {
-      setTimer(prev => prev - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [timer]);
 
   // Redirect if no phone found
   useEffect(() => {
@@ -87,15 +73,14 @@ const VerifyOtp = () => {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("OTP resent successfully.");
-        setTimer(60);
-        setCanResend(false);
+        toast.success("OTP resent successfully.");      
         setOtp(["", "", "", "", "", ""]);
         inputsRef.current[0]?.focus();
       } else {
         toast.error(data.message || "Failed to resend OTP.");
       }
     } catch (e) {
+      console.log('this is the errow while sending', e);
       toast.error("Server error. Please try again.");
     }
     setResending(false);
@@ -125,14 +110,12 @@ const VerifyOtp = () => {
         </div>
 
         <div className="flex justify-between items-center mb-4 text-gray-600">
-          <span className="font-mono select-none">
-            {timer > 0 ? `Resend OTP in 00:${timer < 10 ? `0${timer}` : timer}` : "Didn't receive OTP?"}
-          </span>
+          <span>Didn't receive the OTP?</span>
 
           <button
             className="text-green-600 font-semibold hover:underline disabled:text-gray-400"
             onClick={resendOtp}
-            disabled={!canResend || resending}
+            disabled={resending}
           >
             {resending ? "Sending..." : "Resend OTP"}
           </button>
@@ -140,12 +123,8 @@ const VerifyOtp = () => {
 
         <button
           onClick={handleSubmit}
-          disabled={timer === 0}
-          className={`w-full py-3 rounded-lg font-semibold transition ${
-            timer === 0
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700 text-white"
-          }`}
+        
+          className={`w-full py-3 rounded-lg font-semibold transition duration-300 ${otp.every(d => d !== "") ?          "bg-green-600 hover:bg-green-700 text-white" : "bg-gray-300 text-gray-600 cursor-not-allowed"}`}
         >
           Verify OTP
         </button>

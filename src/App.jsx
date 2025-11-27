@@ -26,6 +26,7 @@ import FloatingChatbot from './components/FloatingChatbot';
 import ActivityDashboard from './pages/ActivityDashboard';
 import DetectPest from './pages/PestDetection';
 import MarketTrends from './components/MarketTrends';
+import TwilioInvite from './pages/TwilioInvite';
 
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
                 <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="/pest-detection" element={<DetectPest />} />
                 <Route path='/market-trends' element={<MarketTrends/>} />
+                <Route path="/twilio-invite" element={<TwilioInvite/>} />
                
                 
 

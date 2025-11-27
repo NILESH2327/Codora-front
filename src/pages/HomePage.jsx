@@ -32,7 +32,7 @@ const HomePage = () => {
 
               {/* Get Started -> Register */}
               <Link
-                to="/register"
+                to="/twilio-invite"
                 className="inline-flex items-center px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-xl hover:bg-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
                 {t('getStarted')}
@@ -41,7 +41,7 @@ const HomePage = () => {
 
               {/* Login */}
               <Link
-                to="/login"
+                to="/twilio-invite"
                 className="inline-flex items-center px-8 py-4 border-2 border-green-600 text-green-600 text-lg font-semibold rounded-xl hover:bg-green-600 hover:text-white transition-all duration-200"
               >
                 {t('login')}

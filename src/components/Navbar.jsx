@@ -86,7 +86,7 @@ const Navbar = ({ isAuthenticated }) => {
               </button>
             ) : (
               <Link
-                to="/login"
+                to="/twilio-invite"
                 className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors"
               >
                 {t("login")}
