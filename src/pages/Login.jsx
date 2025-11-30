@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { onLogin } from "../lib/actions/authActions";  
+import { isAuthenticated, onLogin } from "../lib/actions/authActions";
 import GoogleAuth from "../components/GoogleAuth";
 import { postJSON } from "../api";
 
@@ -11,6 +11,14 @@ const Login = () => {
   const [phone, setphone] = useState("");
   const [password, setPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    console.log(isAuthenticated());
+    if (isAuthenticated()) {
+      toast.error("Already Registered");
+      navigate('/dashboard')
+    }
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault();

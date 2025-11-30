@@ -54,7 +54,7 @@ const VerifyOtp = () => {
       if (data.success) {
         toast.success("OTP Verified!");
         localStorage.setItem("token", data.token);
-        navigate("/dashboard");
+        navigate("/update-profile" , {  state: { phone } });
       } else {
         toast.error(data.message);
       }

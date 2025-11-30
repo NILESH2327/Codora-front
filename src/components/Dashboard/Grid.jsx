@@ -88,13 +88,13 @@ const Grid = () => {
                 />
             </div>
 
-            <div className="md:col-span-1 bg-teal-400/90 hover:bg-teal-400 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
+            <Link to={'/crop-calender'} className="md:col-span-1 bg-teal-400/90 hover:bg-teal-400 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
                 <CardContent
                     icon={<Microscope className="h-8 w-8" />}
-                    title="Fertilizer Guidance"
-                    text="Smart suggestions for right fertilizer quantity & timing."
+                    title="Smart Crop Calender"
+                    text="Get crop-specific planting & harvesting schedules."
                 />
-            </div>
+            </Link>
 
             <div className="md:col-span-1 bg-amber-400/90 hover:bg-amber-400 rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
                 <CardContent
