@@ -1,100 +1,223 @@
 import React, { useState } from "react";
 import cropCalendar from "../data/cropData.jsx";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp
+} from "lucide-react";
 
-const months = Object.keys(cropCalendar);
+/* Malayalam localisation */
+const mlMonths = [
+  "ജനുവരി", "ഫെബ്രുവരി", "മാർച്ച്", "ഏപ്രിൽ", "മേയ്", "ജൂൺ",
+  "ജൂലൈ", "ഓഗസ്റ്റ്", "സെപ്റ്റംബർ", "ഒക്ടോബർ", "നവംബർ", "ഡിസംബർ"
+];
 
-const CropCalendar = () => {
+const mlWeekdays = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
+const enWeekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const monthsEN = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December"
+];
+
+export default function CropCalendar() {
+  const crops = Object.keys(cropCalendar); // paddy, coconut, etc.
+  const [selectedCrop, setSelectedCrop] = useState(crops[0]); // default = paddy
   const [currentIndex, setCurrentIndex] = useState(0);
-  const currentMonth = months[currentIndex];
-  const data = cropCalendar[currentMonth];
+  const [openSection, setOpenSection] = useState("takeaways");
+  const [lang, setLang] = useState("en");
 
-  const prevMonth = () => {
-    setCurrentIndex((prev) => (prev === 0 ? months.length - 1 : prev - 1));
-  };
+  const currentMonthEN = monthsEN[currentIndex];
+  const currentMonthML = mlMonths[currentIndex];
 
-  const nextMonth = () => {
-    setCurrentIndex((prev) => (prev === months.length - 1 ? 0 : prev + 1));
-  };
+  const data = cropCalendar[selectedCrop][currentMonthEN];
+
+  /* Month Navigation */
+  const prevMonth = () =>
+    setCurrentIndex((prev) => (prev === 0 ? monthsEN.length - 1 : prev - 1));
+
+  const nextMonth = () =>
+    setCurrentIndex((prev) => (prev === monthsEN.length - 1 ? 0 : prev + 1));
+
+  /* Date Calcs */
+  const getFirstDay = (year, month) => new Date(year, month, 1).getDay();
+  const getDaysInMonth = (year, month) =>
+    new Date(year, month + 1, 0).getDate();
 
   return (
-    <div className="min-h-screen bg-[#E8F7FF] py-10 px-4">
-      {/* HEADER */}
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-green-800">Cashew Crop Calendar</h1>
-        <p className="text-gray-600 mt-2 font-medium">
-          Plan Smart, Farm Better – Month-wise Crop Operations Guide
+    <div className="min-h-screen bg-[#E8F7FF] pb-20 pt-4">
+
+      {/* Header Banner */}
+      <div className="relative h-60 w-full overflow-hidden">
+        <img
+          src="https://cdn.pixabay.com/photo/2023/09/18/09/10/vietnam-8259984_1280.jpg"
+          alt="banner"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+            Kerala Crop Calendar
+          </h1>
+        </div>
+      </div>
+
+      {/* Subtext */}
+      <div className="text-center px-4 max-w-5xl mx-auto mt-6">
+        <h2 className="text-2xl font-semibold text-gray-700">
+          Kerala Crop Calendar – Plan Smart, Farm Better
+        </h2>
+        <p className="text-gray-600 mt-2">
+          A monthly guide to help farmers schedule operations efficiently,
+          improve yield and prevent crop loss.
         </p>
       </div>
 
-      {/* CALENDAR CONTAINER */}
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-6 border border-gray-200">
+      {/* Language Toggle */}
+      <div className="text-center mb-4">
+        <button
+          onClick={() => setLang(lang === "en" ? "ml" : "en")}
+          className="px-4 py-2 rounded-lg bg-white border shadow hover:bg-gray-50"
+        >
+          {lang === "en" ? "മലയാളം" : "English"}
+        </button>
+      </div>
 
-        {/* MONTH NAVIGATION BAR */}
-        <div className="flex items-center justify-between bg-green-700 text-white px-5 py-3 rounded-xl">
-          <button onClick={prevMonth} className="hover:opacity-80 transition">
-            <ChevronLeft size={30} />
-          </button>
+      {/* -------- Crop Dropdown -------- */}
+      <div className="text-center my-4">
+        <select
+          value={selectedCrop}
+          onChange={(e) => setSelectedCrop(e.target.value)}
+          className="px-4 py-2 rounded-lg border shadow bg-white"
+        >
+          {crops.map((c) => (
+            <option key={c} value={c} className="capitalize">
+              {c.charAt(0).toUpperCase() + c.slice(1)}
+            </option>
+          ))}
+        </select>
+      </div>
 
-          <h2 className="text-2xl font-semibold tracking-wide">{currentMonth}</h2>
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto px-4 mt-8">
 
-          <button onClick={nextMonth} className="hover:opacity-80 transition">
-            <ChevronRight size={30} />
-          </button>
-        </div>
+        {/* LEFT: CALENDAR */}
+        <div className="bg-white border shadow-xl rounded-2xl p-6">
 
-        {/* CROP STAGE SECTION */}
-        <div className="mt-6 bg-green-50 border-l-4 border-green-600 p-4 rounded-lg shadow-sm">
-          <h3 className="text-xl font-bold text-green-800">🌱 Crop Stage</h3>
-          <p className="text-gray-700 mt-2">{data.cropStage}</p>
-        </div>
+          <div className="flex items-center justify-between bg-green-700 text-white px-5 py-3 rounded-xl">
+            <button onClick={prevMonth}>
+              <ChevronLeft size={28} />
+            </button>
 
-        {/* OPERATIONS SECTION */}
-        <div className="mt-6 bg-blue-50 border-l-4 border-blue-600 p-4 rounded-lg shadow-sm">
-          <h3 className="text-xl font-bold text-blue-900">🔧 Operations</h3>
+            <h2 className="text-xl font-semibold">
+              {lang === "ml" ? currentMonthML : currentMonthEN} 2026
+            </h2>
 
-          <ul className="list-disc pl-6 mt-3 text-gray-700 space-y-2">
-            {data.operations.map((op, idx) => (
-              <li key={idx} className="text-sm font-medium">{op}</li>
+            <button onClick={nextMonth}>
+              <ChevronRight size={28} />
+            </button>
+          </div>
+
+          {/* Weekdays */}
+          <div className="grid grid-cols-7 gap-2 text-center font-semibold text-gray-700 mt-5">
+            {(lang === "ml" ? mlWeekdays : enWeekdays).map((d) => (
+              <div key={d} className="py-2 text-[14px]">{d}</div>
             ))}
-          </ul>
-        </div>
+          </div>
 
-        {/* MINI CALENDAR (KSACC STYLE) */}
-        <div className="mt-10">
-          <h3 className="text-xl font-bold text-gray-800 mb-3">
-            📅 Monthly Calendar View
-          </h3>
-
-          <div className="grid grid-cols-7 gap-2 text-center">
-            {/* WEEKDAY HEADER */}
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-              <div key={day} className="font-semibold text-gray-700 py-2">
-                {day}
-              </div>
+          {/* Dates */}
+          <div className="grid grid-cols-7 gap-2 mt-2 text-center">
+            {[...Array(getFirstDay(2026, currentIndex))].map((_, i) => (
+              <div key={i}></div>
             ))}
-
-            {/* EMPTY CELLS FOR ALIGNMENT */}
-            {[...Array(2)].map((_, i) => (
-              <div key={i} className="py-4 bg-transparent"></div>
-            ))}
-
-            {/* SAMPLE DAYS (STATIC LIKE KSACC) */}
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((day) => (
+            {[...Array(getDaysInMonth(2026, currentIndex))].map((_, i) => (
               <div
-                key={day}
-                className="p-3 bg-white rounded-md shadow-sm border hover:bg-green-100 transition cursor-pointer"
+                key={i}
+                className="py-3 rounded-md border shadow-sm bg-white text-gray-700 hover:bg-green-100 cursor-pointer transition"
               >
-                {day}
+                {i + 1}
               </div>
             ))}
           </div>
         </div>
 
+        {/* RIGHT: DETAILS */}
+        <div className="bg-white border shadow-xl rounded-2xl p-6">
+
+          {/* Crop Stage */}
+          <div className="bg-green-50 border-l-4 border-green-700 p-4 rounded-md">
+            <h3 className="text-xl font-bold text-green-800">
+              {lang === "ml" ? "വിളയുടെ ഘട്ടം" : "Crop Stage"}
+            </h3>
+            <p className="mt-2 text-gray-700">
+              {lang === "ml" ? data.cropStage_ml : data.cropStage}
+            </p>
+          </div>
+
+          {/* Operations */}
+          <div className="mt-6 border rounded-md">
+            <button
+              onClick={() => setOpenSection("operations")}
+              className="w-full flex justify-between px-4 py-3 font-semibold text-gray-800"
+            >
+              {lang === "ml" ? "പ്രവർത്തനങ്ങൾ" : "Operations"}
+              {openSection === "operations" ? <ChevronUp /> : <ChevronDown />}
+            </button>
+
+            {openSection === "operations" && (
+              <div className="px-5 pb-4 text-gray-700">
+                <ul className="list-disc pl-5 space-y-2">
+                  {(lang === "ml" ? data.operations_ml : data.operations).map(
+                    (v, i) => <li key={i}>{v}</li>
+                  )}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Weather Precautions */}
+          <div className="mt-4 border rounded-md">
+            <button
+              onClick={() => setOpenSection("weather")}
+              className="w-full flex justify-between px-4 py-3 font-semibold text-gray-800"
+            >
+              {lang === "ml" ? "കാലാവസ്ഥാ മുൻകരുതലുകൾ" : "Weather Precautions"}
+              {openSection === "weather" ? <ChevronUp /> : <ChevronDown />}
+            </button>
+
+            {openSection === "weather" && (
+              <div className="px-5 pb-4 text-gray-700">
+                <ul className="list-disc pl-5 space-y-2">
+                  {(lang === "ml" ? data.weatherPrecautions_ml : data.weatherPrecautions)
+                    .map((v, i) => <li key={i}>{v}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Key Takeaways */}
+          <div className="mt-4 border rounded-md bg-green-50">
+            <button
+              onClick={() => setOpenSection("takeaways")}
+              className="w-full flex justify-between px-4 py-3 text-green-700 font-bold"
+            >
+              {lang === "ml" ? "മുഖ്യ കാര്യങ്ങൾ" : "Key Takeaways"}
+              {openSection === "takeaways" ? <ChevronUp /> : <ChevronDown />}
+            </button>
+
+            {openSection === "takeaways" && (
+              <div className="px-5 pb-4 text-gray-800">
+                <ul className="list-disc pl-5 space-y-2">
+                  {(lang === "ml" ? data.keyTakeaways_ml : data.keyTakeaways)
+                    .map((v, i) => <li key={i}>{v}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+
+        </div>
+
       </div>
     </div>
   );
-};
-
-export default CropCalendar;
- 
+}

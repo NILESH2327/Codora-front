@@ -79,30 +79,38 @@ const Grid = () => {
             </Link>
 
             {/* --- Row 3 --- */}
-            <div className="md:col-span-2 bg-red-500/90 hover:bg-red-500 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
+          <Link
+                to="/soil-scanner"
+                className="md:col-span-2 bg-red-500/90 hover:bg-red-500 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]"
+>
                 <CardContent
-                    icon={<Bug
-                         className="h-8 w-8" />}
-                    title="Soil Health Scanner"
-                    text="Analyze soil condition and nutrient deficiencies using AI."
+                icon={<Bug className="h-8 w-8" />}
+                title="Soil Health Scanner"
+                text="Analyze soil condition and nutrient deficiencies using AI."
                 />
-            </div>
+         </Link>
 
-            <div className="md:col-span-1 bg-teal-400/90 hover:bg-teal-400 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
-                <CardContent
-                    icon={<Microscope className="h-8 w-8" />}
-                    title="Fertilizer Guidance"
-                    text="Smart suggestions for right fertilizer quantity & timing."
+
+            <Link
+                 to="/fertilizer-guidance"
+                 className="md:col-span-1 bg-teal-400/90 hover:bg-teal-400 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]"
+>
+                 <CardContent
+                 icon={<Microscope className="h-8 w-8" />}
+                 title="Fertilizer Guidance"
+                 text="Smart suggestions for right fertilizer quantity & timing."
                 />
-            </div>
+           </Link>
 
-            <div className="md:col-span-1 bg-amber-400/90 hover:bg-amber-400 rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
+             <Link
+                 to="/nearby-service"
+                 className="md:col-span-1 bg-amber-400/90 hover:bg-amber-400 rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
                 <CardContent
                     icon={<MapPin className="h-8 w-8" />}
                     title="Nearby Agri Services"
                     text="Locate agri shops, labs, tractor rentals near you."
                 />
-            </div>
+           </Link>
         </div>
     )
 }

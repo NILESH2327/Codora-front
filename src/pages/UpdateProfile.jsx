@@ -23,11 +23,7 @@ export default function UpdateProfilePage() {
     email: "",
     phone: "",
     soilType: "",
-    location: {
-      latitude: "", 
-      longitude: "",
-      district: "",
-    },
+    location: "",
     language: "ml-IN",
     irrigation: "",
     primaryCrop: "",
@@ -57,24 +53,17 @@ export default function UpdateProfilePage() {
   const autoFillLocation = () => {
     setLocLoading(true);
 
-
     navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude.toFixed(5);
-        const long = pos.coords.longitude.toFixed(5);
-        const city = await getCityName(lat, long);
-        console.log("this is the city", city);
-        setProfile({ ...profile, location: { latitude: lat , longitude:long , district: city} });
+      (pos) => {
+        const loc = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+        setProfile({ ...profile, location: loc });
         setLocLoading(false);
       },
       () => {
         alert("Failed to access location");
         setLocLoading(false);
-      }, {
-    enableHighAccuracy: true,  // use GPS
-    timeout: 10000,            // wait max 10 sec for precise GPS
-    maximumAge: 0              // NO cached locations
-      }    );
+      }
+    );
   };
 
   // Submit
@@ -95,22 +84,6 @@ export default function UpdateProfilePage() {
 
     setLoading(false);
   };
-
-
-async function getCityName(lat, lon) {
-  console.log("this is the lat and lon", lat , lon);
-  const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5&appid=0c0fdbaea0ed2ec1f0f82ad4b62eea1b`;
-
-  const res = await fetch(url);
-  console.log("this is the res", res);
-  const data = await res.json();
-  console.log("this is the data", data);
-
-  return data[0].name ;
-}
-
-
-
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
@@ -191,8 +164,7 @@ async function getCityName(lat, lon) {
               type="text"
               className="w-full bg-transparent outline-none"
               placeholder="Enter location"
-              value={profile.location.district}
-              disabled
+              value={profile.location}
               onChange={(e) =>
                 setProfile({ ...profile, location: e.target.value })
               }

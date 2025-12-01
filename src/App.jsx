@@ -27,6 +27,10 @@ import ActivityDashboard from './pages/ActivityDashboard';
 import DetectPest from './pages/PestDetection';
 import MarketTrends from './components/MarketTrends';
 
+import FertilizerGuidance from "./pages/FertilizerGuidance";
+import SoilScanner from './pages/SoilScanner';
+import NearbyAgriServices from './pages/NearbyAgriService';
+
 // YOUR ROUTES (from HEAD)
 import TwilioInvite from './pages/TwilioInvite';
 import CommodityMarketplace from './pages/MarketPlace';
@@ -104,6 +108,18 @@ function App() {
 
                 {/* NEW GITHUB ROUTE */}
                 <Route path="/crop-calendar" element={<CropCalendar />} />
+                {/* Fertilizer Guidance */}
+                <Route path="/fertilizer-guidance" element={<FertilizerGuidance />} />
+
+                {/* Soil Scanner */}
+                <Route path="/soil-scanner" element={<SoilScanner />} />
+
+                {/* Nearby service*/}
+                <Route path="/nearby-service" element={<NearbyAgriServices />} />
+
+
+
+
 
               </Routes>
             </main>

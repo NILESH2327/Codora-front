@@ -15,8 +15,6 @@ import { postJSON } from '../api';
 import axios from 'axios';
 
 // YOUR COMPONENTS
-import MarketTrends from '../components/MarketTrends';
-import WeatherCard from '../components/WeatherCard';
 import Grid from '../components/Dashboard/Grid';
 
 const Dashboard = () => {
@@ -29,7 +27,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const api = axios.create({ baseURL: import.meta.env.VITE_API_BASE });
 
-  // Fetch Market & Schemes
   const fetchData = async () => {
     try {
       const [mres, sres] = await Promise.all([
@@ -43,13 +40,11 @@ const Dashboard = () => {
     }
   };
 
-  // Fetch Crop Tips
   const getTips = async () => {
     const tips = await postJSON('/advisory/generate-advisory', {});
     setcropTips(tips.advisories || []);
   };
 
-  // Authentication + Load tips & data
   useEffect(() => {
     if (!isAuthenticated()) {
       toast.error("Please login First");
@@ -59,12 +54,10 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // Fetch Weather
   useEffect(() => {
     const loadWeather = async () => {
       try {
-        const url =
-          `https://api.weatherapi.com/v1/forecast.json?key=748c922b6b124c14ad305356252111&q=Kerala&days=4&aqi=no&alerts=no`;
+        const url = `https://api.weatherapi.com/v1/forecast.json?key=748c922b6b124c14ad305356252111&q=Kerala&days=4&aqi=no&alerts=no`;
 
         const response = await fetch(url);
         const data = await response.json();
@@ -106,11 +99,10 @@ const Dashboard = () => {
           {/* LEFT SIDE */}
           <div className="lg:col-span-2 space-y-8">
 
-            {/* YOUR OLD WEATHER CARD */}
-            <WeatherCard Weather={Weather} setWeather={setWeather} />
+            {/* REMOVE old WeatherCard — using new one only */}
             <Grid />
 
-            {/* NEW WEATHER UI BELOW (from GitHub) */}
+            {/* NEW WEATHER UI */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold mb-6 flex items-center">
                 <Cloud className="h-6 w-6 text-blue-600 mr-2" />
@@ -129,7 +121,7 @@ const Dashboard = () => {
 
                 <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-blue-400">
                   <div className="flex items-center gap-2"><Thermometer size={16} />Feels {Weather.current.feelslike_c}°C</div>
-                  <div className="flex items-center gap-2"><Droplets size={16} />{Weather.current.hidity}% Humidity</div>
+                  <div className="flex items-center gap-2"><Droplets size={16} />{Weather.current.humidity}% Humidity</div>
                   <div className="flex items-center gap-2"><Wind size={16} />{Weather.current.wind_kph} km/h</div>
                 </div>
               </div>
@@ -147,9 +139,8 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* MAIN TOOLS */}
+            {/* MAIN TOOLS — only 1 copy each now */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
               <Link to="/upload" className="bg-green-50 rounded-xl p-6 shadow hover:scale-[1.02] transition">
                 <div className="flex items-center text-xl font-semibold mb-2">
                   <Microscope className="mr-2 text-emerald-700" /> Detect Crop Disease
@@ -173,7 +164,6 @@ const Dashboard = () => {
                 <div className="text-xl font-semibold text-yellow-800 mb-2">📅 Crop Calendar</div>
                 <p className="text-gray-700 text-sm">Month-wise farming tasks, operations & crop stages.</p>
               </Link>
-
             </div>
           </div>
 
