@@ -38,7 +38,8 @@ import RequirementDetails from './pages/Requirements';
 import Schemes from './pages/Schemes';
 import SellBuyForm from './pages/SellBuyForm';
 import SchemeForm from './pages/AddScheme';
-import SchemeDetailPage from './pages/SChemePage';
+import SchemeDetailPage from './pages/SchemePage';
+import AdminDashboard from './pages/AdminDashboard';
 
 // NEW ROUTE FROM GITHUB
 import CropCalendar from "./components/CropCalendar";
@@ -54,7 +55,7 @@ function App() {
   }, [])
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId="145908921972-5nv0rla1inn6b7msb0svfvn4qp0n25hq.apps.googleusercontent.com">
       <LanguageProvider>
         <Router>
           <ToastContainer position="bottom-right" />
@@ -105,6 +106,12 @@ function App() {
                 <Route path='/market-place' element={<CommodityMarketplace />} />
                 <Route path='/market-place/create-requirement' element={<SellBuyForm />} />
                 <Route path="/requirements/:id" element={<RequirementDetails />} />
+
+                {/* Admin Routes */}
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/schemes/add" element={<SchemeForm />} />
+               
+                
 
                 {/* NEW GITHUB ROUTE */}
                 <Route path="/crop-calendar" element={<CropCalendar />} />

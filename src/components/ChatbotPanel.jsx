@@ -30,6 +30,9 @@ const ChatbotPanel = () => {
   const [isListening, setIsListening] = useState(false);
   const [hasAskedQuestion, setHasAskedQuestion] = useState(false);
   const messagesEndRef = useRef(null);
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -77,9 +80,10 @@ const ChatbotPanel = () => {
       };
 
       console.log("Bot response data:", botResponseData);
+      playBotAudio(botResponseData.audioBase64);
 
       setMessages((prev) => [...prev, botResponse]);
-      speak(`${botResponseData.answer}, ${botResponseData.steps.join(" ")}`, botResponseData.language || language);
+
     } catch (error) {
       console.error("Error getting bot response:", error);
       setMessages((prev) => [
@@ -98,10 +102,44 @@ const ChatbotPanel = () => {
     }
   };
 
-  const toggleVoiceInput = () => {
-    if (!isListening) startListening();
-    setIsListening((prev) => !prev);
+  // Add this function inside ChatbotPanel or import from a util file
+  const playBotAudio = (base64audio) => {
+    try {
+      if (!base64audio) return;
+
+      // Stop any existing audio
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+
+      // Convert base64 → audio URL
+      const audioBlob = new Blob(
+        [Uint8Array.from(atob(base64audio), (c) => c.charCodeAt(0))],
+        { type: "audio/mp3" }
+      );
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      audio.onended = () => setIsPlaying(false);
+
+      audio.play();
+      setIsPlaying(true);
+    } catch (err) {
+      console.error("Audio playback error:", err);
+    }
   };
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+    }
+  };
+
 
   const quickQuestions = [
     "Best time to plant rice in Kerala?",
@@ -126,14 +164,12 @@ const ChatbotPanel = () => {
             className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`flex items-start space-x-2 max-w-[80%] ${
-                msg.sender === "user" ? "flex-row-reverse space-x-reverse" : ""
-              }`}
+              className={`flex items-start space-x-2 max-w-[80%] ${msg.sender === "user" ? "flex-row-reverse space-x-reverse" : ""
+                }`}
             >
               <div
-                className={`p-2 rounded-full ${
-                  msg.sender === "user" ? "bg-green-600" : "bg-blue-600"
-                }`}
+                className={`p-2 rounded-full ${msg.sender === "user" ? "bg-green-600" : "bg-blue-600"
+                  }`}
               >
                 {msg.sender === "user" ? (
                   <User className="h-4 w-4 text-white" />
@@ -143,16 +179,15 @@ const ChatbotPanel = () => {
               </div>
 
               <div
-                className={`p-2 rounded-lg text-xs ${
-                  msg.sender === "user" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-900"
-                }`}
+                className={`p-2 rounded-lg text-xs ${msg.sender === "user" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-900"
+                  }`}
               >
                 {msg.sender === "bot" && msg.templateId === 2 ? (
                   <div>
                     <p>{msg.answer}</p>
                     <ol className="list-decimal list-inside mt-1 text-xs text-gray-700">
                       {msg.steps.map((step, idx) => (
-                        <li key={idx} className="text-black">{step.replace("**","")}</li>
+                        <li key={idx} className="text-black">{step.replace("**", "")}</li>
                       ))}
                     </ol>
                   </div>
@@ -160,9 +195,8 @@ const ChatbotPanel = () => {
                   <p>{msg.answer || msg.text}</p>
                 )}
                 <p
-                  className={`mt-1 text-[10px] ${
-                    msg.sender === "user" ? "text-green-100" : "text-gray-500"
-                  }`}
+                  className={`mt-1 text-[10px] ${msg.sender === "user" ? "text-green-100" : "text-gray-500"
+                    }`}
                 >
                   {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </p>
@@ -227,7 +261,17 @@ const ChatbotPanel = () => {
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-xs"
           />
 
-          <AudioRecorder  setMessage={setInputText} setProcessing={setIsTyping}/>
+          <AudioRecorder setMessage={setInputText} setProcessing={setIsTyping} />
+
+          {isPlaying && (
+            <button
+              onClick={stopAudio}
+              className="px-3 py-2 bg-red-500 text-white rounded-lg text-xs"
+            >
+              Stop
+            </button>
+          )}
+
           {/* <AudioReco  setMessage={setMessage} seProcessing={setIsTyping}/> */}
 
           <button

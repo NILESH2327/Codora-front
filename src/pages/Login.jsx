@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { onLogin } from "../lib/actions/authActions";  
+import { isAuthenticated, onLogin } from "../lib/actions/authActions";
 import GoogleAuth from "../components/GoogleAuth";
 import { postJSON } from "../api";
 
@@ -10,20 +10,34 @@ const Login = () => {
 
   const [phone, setphone] = useState("");
   const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    console.log(isAuthenticated());
+    if (isAuthenticated()) {
+      toast.error("Already Registered");
+      navigate('/dashboard')
+    }
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const data = await postJSON('/auth/login',{ phone, password } );
-   
+      const data = await postJSON("/auth/login", { phone, password, isAdmin });
 
       if (data.success) {
-        
-        onLogin({ id: data.farmerId, token: data.token });
+        onLogin({ id: data.userId, token: data.token, isAdmin });
 
         toast.success(data.message);
-        setTimeout(() => window.location.href = "/dashboard", 1000);
+
+        setTimeout(() => {
+          if (isAdmin) {
+            window.location.href = "/admin/dashboard";
+          } else {
+            window.location.href = "/dashboard";
+          }
+        }, 800);
 
       } else {
         toast.error(data.message);
@@ -66,6 +80,20 @@ const Login = () => {
             />
           </div>
 
+          {/* ADMIN CHECKBOX */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="admin"
+              checked={isAdmin}
+              onChange={() => setIsAdmin(!isAdmin)}
+              className="w-4 h-4 accent-green-600"
+            />
+            <label htmlFor="admin" className="text-gray-700">
+              Login as Admin
+            </label>
+          </div>
+
           <button
             type="submit"
             className="w-full bg-green-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-green-700 transition-all"
@@ -80,7 +108,8 @@ const Login = () => {
             Register
           </Link>
         </p>
-      <GoogleAuth/>
+
+        <GoogleAuth />
       </div>
     </div>
   );
