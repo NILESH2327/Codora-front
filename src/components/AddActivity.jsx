@@ -1,19 +1,23 @@
 import React, { useState } from "react";
 import { postJSON } from "../api";
 import { toast } from "react-toastify";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function AddActivity() {
   const defaultform = { type: "", date: "", note: "" };
   const [form, setForm] = useState(defaultform);
 
+  const { t } = useLanguage();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await postJSON("/activity/add", form);
+
     if (res.farmerId) {
-      toast.success("Activity logged successfully!");
+      toast.success(t("ActivitySuccess"));
       setForm(defaultform);
     } else {
-      toast.error("Failed to log activity. Please try again.");
+      toast.error(t("ActivityFailed"));
     }
   };
 
@@ -39,7 +43,7 @@ export default function AddActivity() {
           +
         </span>
         <span className="text-xs font-semibold text-gray-800">
-          Log activity
+          {t("Log activity")}
         </span>
       </div>
 
@@ -50,17 +54,17 @@ export default function AddActivity() {
           value={form.type}
           className="w-full rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] focus:outline-none focus:ring-1 focus:ring-green-200"
         >
-          <option value="">Type</option>
-          <option value="irrigation">Irrigation</option>
-          <option value="fertilization">Fertilization</option>
-          <option value="pesticide_application">Pesticide</option>
-          <option value="harvesting">Harvesting</option>
-          <option value="sowing">Sowing</option>
-          <option value="spraying">Spraying</option>
-          <option value="pest">Pest Issue</option>
-          <option value="Weatherimpact">Weather Impact</option>
-          <option value="Weeding">Weeding</option>
-          <option value="other">Other</option>
+          <option value="">{t("Type")}</option>
+          <option value="irrigation">{t("Irrigation")}</option>
+          <option value="fertilization">{t("Fertilization")}</option>
+          <option value="pesticide_application">{t("Pesticide")}</option>
+          <option value="harvesting">{t("Harvesting")}</option>
+          <option value="sowing">{t("Sowing")}</option>
+          <option value="spraying">{t("Spraying")}</option>
+          <option value="pest">{t("Pest Issue")}</option>
+          <option value="Weatherimpact">{t("Weather Impact")}</option>
+          <option value="Weeding">{t("Weeding")}</option>
+          <option value="other">{t("Other")}</option>
         </select>
       </div>
 
@@ -79,7 +83,7 @@ export default function AddActivity() {
         <input
           name="note"
           value={form.note}
-          placeholder="Note (dose, signs...)"
+          placeholder={t("NotePlaceholder")}
           className="w-full rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] focus:outline-none focus:ring-1 focus:ring-green-200"
         />
       </div>
@@ -90,7 +94,7 @@ export default function AddActivity() {
           type="submit"
           className="w-full md:w-20 rounded-full bg-green-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-green-700 transition-colors"
         >
-          Save
+          {t("Save")}
         </button>
       </div>
     </form>

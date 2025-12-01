@@ -1,0 +1,60 @@
+{
+  "Home": "Home",
+  "dashboard": "Dashboard",
+  "My Activity": "My Activity",
+  "Tools": "Tools",
+  "Profile": "Profile",
+  "Logout": "Logout",
+  "login": "Login",
+  "Language": "Language",
+  "English": "English",
+  "Malayalam": "Malayalam",
+  "Krishi Sakhi": "Krishi Sakhi",
+
+  "pleaseLogin": "Please login first",
+  "loadingWeather": "Loading weather...",
+  "weatherFailed": "Failed to load weather data.",
+  "farmerDashboard": "Farmer Dashboard",
+  "dashboardSubtitle": "Your personalized farming insights and recommendations",
+  "todaysPlanner": "Today's Planner",
+  "addTaskPlaceholder": "Add a task (e.g. Fertilize north plot)",
+  "add": "Add",
+  "noTasks": "No tasks yet. Add what you plan to do today.",
+
+  
+  "Log activity": "Log activity",
+  "Type": "Type",
+  "Irrigation": "Irrigation",
+  "Fertilization": "Fertilization",
+  "Pesticide": "Pesticide",
+  "Harvesting": "Harvesting",
+  "Sowing": "Sowing",
+  "Spraying": "Spraying",
+  "Pest Issue": "Pest Issue",
+  "Weather Impact": "Weather Impact",
+  "Weeding": "Weeding",
+  "Other": "Other",
+  "Date": "Date",
+  "NotePlaceholder": "Note (dose, signs...)",
+  "Save": "Save",
+  "ActivitySuccess": "Activity logged successfully!",
+  "ActivityFailed": "Failed to log activity. Please try again.",
+
+
+  "loading": "Loading...",
+  "weather_forecast": "Weather Forecast",
+  "enter_location": "Enter location...",
+  "enter_location_error": "Please enter a location",
+  "geolocation_not_supported": "Geolocation is not supported",
+  "unable_to_detect_location": "Unable to detect your location",
+  "feels_like": "Feels like",
+  "humidity": "Humidity",
+  "wind": "Wind"
+
+
+
+
+
+
+
+}

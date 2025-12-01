@@ -1,0 +1,55 @@
+{
+    "Home": "ഹോം",
+    "dashboard": "ഡാഷ്ബോർഡ്",
+    "My Activity": "എന്റെ പ്രവർത്തനങ്ങൾ",
+    "Tools": "ഉപകരണങ്ങൾ",
+    "Profile": "പ്രൊഫൈൽ",
+    "Logout": "ലോഗൗട്ട്",
+    "login": "ലോഗിൻ",
+    "Language": "ഭാഷ",
+    "English": "ഇംഗ്ലീഷ്",
+    "Malayalam": "മലയാളം",
+    "Krishi Sakhi": "കൃഷി സഖി",
+
+    "pleaseLogin": "ദയവായി ആദ്യം ലോഗിൻ ചെയ്യുക",
+    "loadingWeather": "കാലാവസ്ഥാ വിവരം ലോഡിങ്...",
+    "weatherFailed": "കാലാവസ്ഥാ ഡാറ്റ ലഭ്യമല്ല.",
+    "farmerDashboard": "കർഷക ഡാഷ്ബോർഡ്",
+    "dashboardSubtitle": "നിങ്ങളുടെ വ്യക്തിഗത കൃഷി ശുപാർശകളും അറിവുകളും",
+    "todaysPlanner": "ഇന്നത്തെ പ്രവർത്തനങ്ങൾ",
+    "addTaskPlaceholder": "ഒരു പ്രവൃത്തി ചേർക്കുക (ഉദാ: വടക്കൻ വയലിൽ വളം ഇടുക)",
+    "add": "ചേർക്കുക",
+    "noTasks": "ഇന്നേക്ക് ഒരു പ്രവർത്തിയും ചേർത്തിട്ടില്ല.",
+
+  "Log activity": "പ്രവർത്തനം രേഖപ്പെടുത്തുക",
+  "Type": "തരം",
+  "Irrigation": "ജലസേചനം",
+  "Fertilization": "വളപ്രയോഗം",
+  "Pesticide": "കീടനാശിനി പ്രയോഗം",
+  "Harvesting": "വിളവെടുപ്പ്",
+  "Sowing": "വിത്ത് വിത്തൽ",
+  "Spraying": "തളിക്കൽ",
+  "Pest Issue": "കീട പ്രശ്നം",
+  "Weather Impact": "കാലാവസ്ഥയുടെ സ്വാധീനം",
+  "Weeding": "കറ്റാൻ പറിക്കൽ",
+  "Other": "മറ്റ്",
+  "Date": "തീയതി",
+  "NotePlaceholder": "കുറിപ്പ് (അളവ്, ലക്ഷണങ്ങൾ...)",
+  "Save": "സംരക്ഷിക്കുക",
+  "ActivitySuccess": "പ്രവർത്തനം വിജയകരമായി രേഖപ്പെടുത്തി!",
+  "ActivityFailed": "പ്രവർത്തനം രേഖപ്പെടുത്താൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.",
+
+  
+  "loading": "ലോഡിംഗ്...",
+  "weather_forecast": "കാലാവസ്ഥ പ്രവചനം",
+  "enter_location": "സ്ഥലം ചേർക്കുക...",
+  "enter_location_error": "ദയവായി ഒരു സ്ഥലം നൽകുക",
+  "geolocation_not_supported": "ജിയോളൊക്കേഷൻ പിന്തുണയില്ല",
+  "unable_to_detect_location": "സ്ഥലം കണ്ടെത്താൻ കഴിഞ്ഞില്ല",
+  "feels_like": "അനുഭവിക്കുന്നത്",
+  "humidity": "ഈർപ്പം",
+  "wind": "കാറ്റ്"
+
+
+
+}

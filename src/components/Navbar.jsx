@@ -9,98 +9,89 @@ const Navbar = ({ isAuthenticated }) => {
   const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
 
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
   const handleLogout = () => {
     logout();
     window.location.href = "/";
   };
 
+  const isActive = (path) => location.pathname === path;
+
   const navItems = [
-    // { path: "/", label: t("home") },
-    { path: "/dashboard", label: t("dashboard") },
-    // { path: "/upload", label: t("upload") },
-    { path: "/Activity", label: t("My Activity") },
-    // { path: "/knowledge", label: "Knowledge Engine" },
-    {path: "/tools", label: t("Tools")},
+    { path: "/", label: t("Home"), show: !isAuthenticated },
+    { path: "/dashboard", label: t("dashboard"), show: true },
+    { path: "/Activity", label: t("My Activity"), show: true },
+    { path: "/tools", label: t("Tools"), show: true },
+    {
+      path: "/farmer-profile",
+      label: t("Profile"),
+      show: isAuthenticated,
+    },
   ];
 
-  const isActive = (path) => location.pathname === path;
+  const LanguageButton = () => (
+    <button
+      onClick={() => setLanguage(language === "en" ? "ml" : "en")}
+      className="flex items-center space-x-1 px-3 py-2 rounded-md 
+                 text-sm font-medium text-gray-600 hover:text-green-600 
+                 hover:bg-green-50 transition"
+    >
+      <Globe className="h-4 w-4" />
+      <span>{language === "en" ? "മലയാളം" : "English"}</span>
+    </button>
+  );
+
+  const NavLink = ({ item }) => (
+    <Link
+      to={item.path}
+      className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+        isActive(item.path)
+          ? "bg-green-100 text-green-700"
+          : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+      }`}
+    >
+      {item.label}
+    </Link>
+  );
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
+
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="bg-green-600 p-2 rounded-lg group-hover:bg-green-700 transition-colors">
+            <div className="bg-green-600 p-2 rounded-lg group-hover:bg-green-700 transition">
               <Sprout className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">
-              Krishi Sakhi
+            <span className="text-xl font-bold text-gray-800 group-hover:text-green-600 transition">
+              {t("Krishi Sakhi")}
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center space-x-6">
 
-             {isAuthenticated?"":<Link
-                key={"home"}
-                to={"/"}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/')
-                    ? "bg-green-100 text-green-700"
-                    : "text-gray-600 hover:text-green-600 hover:bg-green-50"
-                }`}
-              >
-                {t("Home")}
-              </Link>}
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? "bg-green-100 text-green-700"
-                    : "text-gray-600 hover:text-green-600 hover:bg-green-50"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-            {isAuthenticated && (
-              <Link
-                key="/profile"
-                to="/farmer-profile"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive("/farmer-profile")
-                    ? "bg-green-100 text-green-700"
-                    : "text-gray-600 hover:text-green-600 hover:bg-green-50"
-                }`}
-              >
-                {t("Profile")}
-              </Link>
-            )}
-          </div>
+            {navItems
+              .filter((item) => item.show)
+              .map((item) => (
+                <NavLink key={item.path} item={item} />
+              ))}
 
-          {/* Language Toggle & Auth Buttons (Desktop) */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button
-              onClick={() => setLanguage(language === "en" ? "ml" : "en")}
-              className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-green-600 hover:bg-green-50 transition-colors"
-            >
-              <Globe className="h-4 w-4" />
-              <span>{language === "en" ? "മലയാളം" : "English"}</span>
-            </button>
+            <LanguageButton />
+
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors"
+                className="px-4 py-2 text-green-600 hover:text-green-700 font-medium"
               >
                 {t("Logout")}
               </button>
             ) : (
               <Link
                 to="/twilio-invite"
-                className="px-4 py-2 text-green-600 hover:text-green-700 font-medium transition-colors"
+                className="px-4 py-2 text-green-600 hover:text-green-700 font-medium"
               >
                 {t("login")}
               </Link>
@@ -108,26 +99,25 @@ const Navbar = ({ isAuthenticated }) => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-green-50 transition-colors"
-            >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
+          <button
+            onClick={toggleMenu}
+            className="md:hidden p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-green-50 transition"
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Nav */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => (
+          <div className="md:hidden border-t border-gray-200 pt-3 pb-4 space-y-2">
+            {navItems
+              .filter((item) => item.show)
+              .map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition ${
                     isActive(item.path)
                       ? "bg-green-100 text-green-700"
                       : "text-gray-600 hover:text-green-600 hover:bg-green-50"
@@ -137,53 +127,27 @@ const Navbar = ({ isAuthenticated }) => {
                 </Link>
               ))}
 
-              {isAuthenticated && (
-                <Link
-                  key="/profile-mobile"
-                  to="/farmer-profile"
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActive("/farmer-profile")
-                      ? "bg-green-100 text-green-700"
-                      : "text-gray-600 hover:text-green-600 hover:bg-green-50"
-                  }`}
-                >
-                  {t("Profile")}
-                </Link>
-              )}
+            <LanguageButton />
 
-              <div className="border-t border-gray-200 pt-4 mt-4 flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    setLanguage(language === "en" ? "ml" : "en");
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-600 hover:bg-green-50 transition-colors w-full"
-                >
-                  <Globe className="h-5 w-5" />
-                  <span>{language === "en" ? "മലയാളം" : "English"}</span>
-                </button>
-                {isAuthenticated ? (
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full mt-2 px-3 py-2 text-green-600 hover:text-green-700 font-medium transition-colors text-left"
-                  >
-                    {t("Logout")}
-                  </button>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="w-full mt-2 px-3 py-2 text-green-600 hover:text-green-700 font-medium transition-colors text-left"
-                  >
-                    {t("login")}
-                  </Link>
-                )}
-              </div>
-            </div>
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-green-600 hover:text-green-700 font-medium"
+              >
+                {t("Logout")}
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="block w-full text-left px-3 py-2 text-green-600 hover:text-green-700 font-medium"
+              >
+                {t("login")}
+              </Link>
+            )}
           </div>
         )}
       </div>
