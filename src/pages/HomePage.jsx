@@ -17,37 +17,48 @@ const HomePage = () => {
     <div className="min-h-screen">
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-50 to-blue-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              {t('heroTitle')}
-            </h1>
+      
+            <section
+            
+            
+        className="relative py-32 bg-cover bg-center bg-no-repeat bg-fixed"
+        style={{
+           backgroundImage:
+             "url(https://cdn.pixabay.com/photo/2020/01/22/16/33/rice-4785684_1280.jpg)",
+          }}
+      >
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/20 backdrop-blur-m"></div>
+        
 
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              {t('heroSubtitle')}
-            </p>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
+            {t('heroTitle')}
+          </h1>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <p className="text-xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+            {t('heroSubtitle')}
+          </p>
 
-              {/* Get Started -> Register */}
-              <Link
-                to="/twilio-invite"
-                className="inline-flex items-center px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-xl hover:bg-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-              >
-                {t('getStarted')}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
 
-              {/* Login */}
-              <Link
-                to="/twilio-invite"
-                className="inline-flex items-center px-8 py-4 border-2 border-green-600 text-green-600 text-lg font-semibold rounded-xl hover:bg-green-600 hover:text-white transition-all duration-200"
-              >
-                {t('login')}
-              </Link>
+            <Link
+              to="/twilio-invite"
+              className="inline-flex items-center px-10 py-4 bg-green-500 text-white text-lg font-semibold rounded-xl
+              hover:bg-green-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+            >
+              {t('getStarted')}
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
 
-            </div>
+            <Link
+              to="/twilio-invite"
+              className="inline-flex items-center px-10 py-4 bg-white/20 backdrop-blur-md border border-white/40 text-white text-lg font-semibold rounded-xl
+              hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              {t('login')}
+            </Link>
+
           </div>
         </div>
       </section>

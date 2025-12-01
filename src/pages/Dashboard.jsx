@@ -56,7 +56,7 @@ const Dashboard = () => {
   const loadWeather = async () => {
     try {
       const key = import.meta.env.VITE_WEATHER_API_KEY;
-      const url = `https://api.weatherapi.com/v1/forecast.json?key=${key}&q=Kerala&days=4&aqi=no&alerts=no`;
+      const url = `https://api.weatherapi.com/v1/forecast.json?key=748c922b6b124c14ad305356252111&q=Kerala&days=4&aqi=no&alerts=no`;
 
       const response = await fetch(url);
       const data = await response.json();

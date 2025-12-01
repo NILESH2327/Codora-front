@@ -20,7 +20,7 @@ const Grid = () => {
             {/* Row 1 */}
             <Link
                 to="/upload"
-                className="md:col-span-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
             >
                 <CardContent
                     icon={<Microscope className="h-7 w-7" />}
@@ -31,7 +31,7 @@ const Grid = () => {
 
             <Link
                 to="/market-trends"
-                className="md:col-span-2 bg-gradient-to-r from-amber-400 to-amber-500 text-white rounded-2xl p-5 shadow-md border border-amber-400/70 transition transform hover:scale-[1.01]"
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
             >
                 <CardContent
                     icon={<BarChart className="h-7 w-7" />}
@@ -43,7 +43,7 @@ const Grid = () => {
             {/* Row 2 */}
             <Link
                 to="/pest-detection"
-                className="md:col-span-1 bg-gradient-to-br from-lime-400 to-lime-500 text-white rounded-2xl p-5 shadow-md border border-lime-400/70 transition transform hover:scale-[1.01]"
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
             >
                 <CardContent
                     icon={<Bug className="h-7 w-7" />}
@@ -52,7 +52,9 @@ const Grid = () => {
                 />
             </Link>
 
-            <div className="md:col-span-2 bg-white rounded-2xl p-5 shadow-md border border-green-100 transition transform hover:scale-[1.01]">
+            <div 
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
+            >
                 <CardContent
                     icon={<Microscope className="h-7 w-7 text-emerald-600" />}
                     title="AI Advisory"
@@ -62,7 +64,7 @@ const Grid = () => {
 
             <Link
                 to="/market-place"
-                className="md:col-span-1 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-5 shadow-md border border-green-500/70 transition transform hover:scale-[1.01]"
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
             >
                 <CardContent
                     icon={<MapPin className="h-7 w-7" />}
@@ -73,7 +75,7 @@ const Grid = () => {
 
             <Link
                 to="/soil-scanner"
-                className="md:col-span-2 bg-red-500/90 hover:bg-red-500 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]"
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
             >
                 <CardContent
                     icon={<Bug className="h-8 w-8" />}
@@ -85,7 +87,7 @@ const Grid = () => {
 
             <Link
                 to="/fertilizer-guidance"
-                className="md:col-span-1 bg-teal-400/90 hover:bg-teal-400 text-white rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]"
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
             >
                 <CardContent
                     icon={<Microscope className="h-8 w-8" />}
@@ -96,11 +98,22 @@ const Grid = () => {
 
             <Link
                 to="/nearby-service"
-                className="md:col-span-1 bg-amber-400/90 hover:bg-amber-400 rounded-xl p-6 shadow-md transition transform hover:scale-[1.01]">
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
+                >
                 <CardContent
                     icon={<MapPin className="h-8 w-8" />}
                     title="Nearby Agri Services"
                     text="Locate agri shops, labs, tractor rentals near you."
+                />
+            </Link>
+            <Link
+                to="/crop-calendar"
+                className="md:col-span-2 bg-gradient-to-r from-emerald-300 to-emerald-500 text-white rounded-2xl p-5 shadow-md border border-emerald-500/60 transition transform hover:scale-[1.01]"
+                >
+                <CardContent
+                    icon={<MapPin className="h-8 w-8" />}
+                    title="Crop Calendar"
+                    text="“Month-wise guide showing crop stages, field operations, and weather precautions."
                 />
             </Link>
         </div>
