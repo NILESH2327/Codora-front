@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Upload as UploadIcon,
   Camera,
@@ -6,28 +6,28 @@ import {
   CheckCircle,
   AlertCircle,
   Loader,
-} from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { postJSON } from '../api';
-import { isAuthenticated } from '../lib/actions/authActions';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+} from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { postJSON } from "../api";
+import { isAuthenticated } from "../lib/actions/authActions";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Upload = () => {
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" }); // or "smooth"
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
+
   const navigate = useNavigate();
-  useEffect(() => {
-    console.log(isAuthenticated());
-    if(!isAuthenticated()){
-      toast.error("Please login First");
-      navigate('/login')
-    }   
-  }, [])
-  
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      toast.error(t("pleaseLoginFirst"));
+      navigate("/login");
+    }
+    // include navigate and t to silence lint and keep behaviour stable
+  }, [navigate, t]);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -63,6 +63,12 @@ const Upload = () => {
   const analyzeImage = async () => {
     if (!selectedFile) return;
 
+    // optional: size check (10 MB)
+    if (selectedFile.size > 10 * 1024 * 1024) {
+      toast.error(t("fileTooLarge"));
+      return;
+    }
+
     setIsAnalyzing(true);
     setAnalysisResult(null);
 
@@ -84,11 +90,11 @@ const Upload = () => {
       setAnalysisResult(result);
     } catch (err) {
       setAnalysisResult({
-        disease: "Network Error",
+        disease: t("networkError"),
         confidence: 0,
-        severity: "Unknown",
+        severity: t("unknown"),
         treatment: [],
-        prevention: ["Error: " + err.message],
+        prevention: [t("analysisNetworkError") + ": " + err.message],
       });
     } finally {
       setIsAnalyzing(false);
@@ -101,57 +107,74 @@ const Upload = () => {
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            {t("uploadTitle")}
+            {t("cropDetection.title")}
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {t("uploadSubtitle")}
+            {t("cropDetection.subtitle")}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* grid with items-stretch keeps both cards same height */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           {/* Upload Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col min-h-[420px]">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Upload Image
+              {t("uploadImage.title")}
             </h2>
 
+            {/* Keep the content area flexible so footer (filename + button) stays at bottom */}
             {!previewUrl ? (
               <div
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-green-400 transition-colors cursor-pointer"
+                className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors cursor-pointer flex-1 flex flex-col justify-center"
                 onClick={() => fileInputRef.current?.click()}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
+                }}
               >
                 <UploadIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
 
                 <p className="text-lg font-medium text-gray-700 mb-2">
-                  Drop your image here or click to browse
+                  {t("uploadArea.dropOrClick")}
                 </p>
 
                 <p className="text-sm text-gray-500 mb-4">
-                  Supports JPG, PNG, WEBP up to 10MB
+                  {t("uploadArea.supports")}
                 </p>
 
                 <div className="flex justify-center space-x-4">
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                  <button
+                    type="button"
+                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
                     <Camera className="h-4 w-4" />
-                    <span>Take Photo</span>
+                    <span>{t("uploadButtons.takePhoto")}</span>
                   </button>
 
-                  <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  >
                     <FileImage className="h-4 w-4" />
-                    <span>Choose File</span>
+                    <span>{t("uploadButtons.chooseFile")}</span>
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="relative">
-                  <img
-                    src={previewUrl}
-                    alt="crop"
-                    className="w-full h-64 object-cover rounded-lg"
-                  />
+              <div className="flex-1 flex flex-col justify-between space-y-4">
+                <div className="relative w-full rounded-lg overflow-hidden bg-gray-100">
+                  {/* fixed preview height for stability */}
+                  <div className="w-full h-64 sm:h-80 flex items-center justify-center bg-gray-50">
+                    <img
+                      src={previewUrl}
+                      alt="crop"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </div>
 
                   <button
                     onClick={() => {
@@ -160,14 +183,17 @@ const Upload = () => {
                       setAnalysisResult(null);
                     }}
                     className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+                    aria-label={t("closePreview")}
                   >
                     ×
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">
+                {/* Footer area with file info + analyze button - consistent space reserved */}
+                <div className="flex items-center justify-between mt-2">
+                  <div className="min-w-0">
+                    {/* truncate long filenames */}
+                    <p className="font-medium text-gray-900 truncate">
                       {selectedFile?.name}
                     </p>
                     <p className="text-sm text-gray-500">
@@ -178,17 +204,17 @@ const Upload = () => {
                   <button
                     onClick={analyzeImage}
                     disabled={isAnalyzing}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center space-x-2"
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center space-x-2 ml-4"
                   >
                     {isAnalyzing ? (
                       <>
                         <Loader className="h-4 w-4 animate-spin" />
-                        <span>Analyzing...</span>
+                        <span>{t("analyzing")}</span>
                       </>
                     ) : (
                       <>
                         <Camera className="h-4 w-4" />
-                        <span>Analyze Image</span>
+                        <span>{t("analyzeButton")}</span>
                       </>
                     )}
                   </button>
@@ -206,87 +232,92 @@ const Upload = () => {
           </div>
 
           {/* Results Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col min-h-[420px]">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Analysis Results
+              {t("analysisResults.title")}
             </h2>
 
-            {!analysisResult && !isAnalyzing && (
-              <div className="text-center py-12">
-                <FileImage className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">
-                  Upload an image to get AI-powered analysis
-                </p>
-              </div>
-            )}
+            {/* make results area scrollable if content grows */}
+            <div className="flex-1 overflow-auto">
+              {!analysisResult && !isAnalyzing && (
+                <div className="text-center py-12">
+                  <FileImage className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500">{t("analysisResults.empty")}</p>
+                </div>
+              )}
 
-            {isAnalyzing && (
-              <div className="text-center py-12">
-                <Loader className="h-16 w-16 text-green-600 mx-auto animate-spin mb-4" />
-                <p className="text-gray-600">Analyzing your crop image...</p>
-                <p className="text-sm text-gray-500 mt-2">
-                  This may take a moment
-                </p>
-              </div>
-            )}
+              {isAnalyzing && (
+                <div className="text-center py-12">
+                  <Loader className="h-16 w-16 text-green-600 mx-auto animate-spin mb-4" />
+                  <p className="text-gray-600">{t("analysisProgress")}</p>
+                  <p className="text-sm text-gray-500 mt-2">{t("analysisProgressNote")}</p>
+                </div>
+              )}
 
-            {analysisResult && (
-              <div className="space-y-6">
-                {/* Disease */}
-                <div className="border border-orange-200 bg-orange-50 p-4 rounded-lg">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <AlertCircle className="h-5 w-5 text-orange-600" />
-                    <h3 className="font-semibold text-orange-900">
-                      Disease Detected
-                    </h3>
+              {analysisResult && (
+                <div className="space-y-6">
+                  {/* Disease */}
+                  <div className="border border-orange-200 bg-orange-50 p-4 rounded-lg">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <AlertCircle className="h-5 w-5 text-orange-600" />
+                      <h3 className="font-semibold text-orange-900">
+                        {t("analysisResults.diseaseDetected")}
+                      </h3>
+                    </div>
+
+                    <p className="text-lg font-bold text-orange-900">{analysisResult.disease}</p>
+
+                    <p className="text-sm text-orange-700">
+                      {t("analysisResults.confidence")}: {analysisResult.confidence}% |{" "}
+                      {t("analysisResults.severity")}: {analysisResult.severity}
+                    </p>
                   </div>
 
-                  <p className="text-lg font-bold text-orange-900">
-                    {analysisResult.disease}
-                  </p>
+                  {/* Treatment */}
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+                      {t("analysisResults.treatmentRecommendations")}
+                    </h3>
 
-                  <p className="text-sm text-orange-700">
-                    Confidence: {analysisResult.confidence}% | Severity:{" "}
-                    {analysisResult.severity}
-                  </p>
+                    <ul className="space-y-2">
+                      {analysisResult.treatment?.length ? (
+                        analysisResult.treatment.map((step, idx) => (
+                          <li key={idx} className="flex items-start space-x-2">
+                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-0.5">
+                              {idx + 1}
+                            </span>
+                            <span className="text-gray-700 text-sm">{step}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-sm text-gray-600">{t("analysisResults.noTreatment")}</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Prevention */}
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-3">
+                      {t("analysisResults.preventionTips")}
+                    </h3>
+
+                    <ul className="space-y-2">
+                      {analysisResult.prevention?.length ? (
+                        analysisResult.prevention.map((tip, idx) => (
+                          <li key={idx} className="flex items-start space-x-2">
+                            <span className="w-2 h-2 bg-blue-400 rounded-full mt-2"></span>
+                            <span className="text-gray-700 text-sm">{tip}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-sm text-gray-600">{t("analysisResults.noPrevention")}</li>
+                      )}
+                    </ul>
+                  </div>
                 </div>
-
-                {/* Treatment */}
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Treatment Recommendations
-                  </h3>
-
-                  <ul className="space-y-2">
-                    {analysisResult.treatment?.map((step, idx) => (
-                      <li key={idx} className="flex items-start space-x-2">
-                        <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-0.5">
-                          {idx + 1}
-                        </span>
-                        <span className="text-gray-700 text-sm">{step}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Prevention */}
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">
-                    Prevention Tips
-                  </h3>
-
-                  <ul className="space-y-2">
-                    {analysisResult.prevention?.map((tip, idx) => (
-                      <li key={idx} className="flex items-start space-x-2">
-                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2"></span>
-                        <span className="text-gray-700 text-sm">{tip}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

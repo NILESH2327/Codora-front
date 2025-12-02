@@ -1,21 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import farm from "../assets/farm.png";
 import CloudinaryUploader from "../components/ImageUploader";
 import { getJSON, postJSON, putJSON } from "../api";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import { useLanguage } from "../contexts/LanguageContext";
 
 /**
- * SellBuyWizard.jsx
- * 3-step wizard (horizontal stepper) for creating a Contract.
- *
- * - Step 1: Basic Contract Details
- * - Step 2: Quantity & Price + Product location + Images (multiple)
- * - Step 3: Contractor Info + Review & Submit
- *
- * Notes:
- * - This component prepares a payload matching your ContractSchema shape.
- * - Replace the fetch URL '/api/contracts' with your backend endpoint.
+ * SellBuyWizard.jsx - translated using useLanguage() context
  */
 
 const UNIT_OPTIONS = ["Quintal", "Kg", "Ton"];
@@ -25,7 +17,6 @@ export default function SellBuyWizard() {
   const todayISO = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
   const fileInputRef = useRef();
 
-
   // Step state
   const [step, setStep] = useState(1);
 
@@ -34,7 +25,6 @@ export default function SellBuyWizard() {
   const [postingDate, setPostingDate] = useState(todayISO);
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
-
 
   const [priceAmount, setPriceAmount] = useState("");
   const [priceUnit, setPriceUnit] = useState("Quintal");
@@ -49,17 +39,17 @@ export default function SellBuyWizard() {
   // Location fields
   const [stateVal, setStateVal] = useState("");
   const [district, setDistrict] = useState("");
-  const [location, setLocation] = useState(""); // free-text or derived
+  const [location, setLocation] = useState("");
 
   // Contractor info
   const [contractorName, setContractorName] = useState("");
   const [contractorPhone, setContractorPhone] = useState("");
   const [businessType, setBusinessType] = useState("Farmer");
-  const [contractorImage, setContractorImage] = useState(null); // single file
+  const [contractorImage, setContractorImage] = useState(null);
 
   // Images array for product
   const [images, setImages] = useState([]); // { file, url }
-  const [Loading, setLoading] = useState(false)
+  const [Loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // small sample states->districts to demo dependent select
@@ -74,66 +64,50 @@ export default function SellBuyWizard() {
   const { edit } = useParams();
   const isEditing = !!edit;
 
+  const { t } = useLanguage();
+
   const fetchData = async () => {
-
     const res = await getJSON(`/requirements/${edit}`);
-    console.log('Fetched requirement details:', res);
-    return res.data
-
-  }
+    return res.data;
+  };
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" }); // or "smooth"
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
 
   useEffect(() => {
     if (isEditing) {
       setLoading(true);
-      // Fetch contract data and prefill form fields
       fetchData()
         .then((data) => {
-          // Example prefill - update as per your schema!
-          setType(data.type);
-          setPostingDate(data.postingDate);
-          setTitle(data.title);
-          setNote(data.note);
-          setPriceAmount(data.price.amount);
-          setPriceUnit(data.price.unit);
-          setQuantityAmount(data.quantity.amount);
-          setQuantityUnit(data.quantity.unit);
-          setProductName(data.product.name);
-          setProductVariety(data.product.variety);
-          setBuyingFrequency(data.product.buyingFrequency);
-          setStateVal(data.contractorInfo.state);
-          setContractorName(data.contractorInfo.name);
-          setContractorPhone(data.contractorInfo.phone);
-          setBusinessType(data.contractorInfo.businessType || "Farmer");
-          // If you want to prefill images, map URLs to the structure
-          setImages(data.images.map(url => ({ url })));
+          setType(data.type || "sell");
+          setPostingDate(data.postingDate || todayISO);
+          setTitle(data.title || "");
+          setNote(data.note || "");
+          setPriceAmount(data.price?.amount ?? "");
+          setPriceUnit(data.price?.unit || "Quintal");
+          setQuantityAmount(data.quantity?.amount ?? "");
+          setQuantityUnit(data.quantity?.unit || "Quintal");
+          setProductName(data.product?.name || "");
+          setProductVariety(data.product?.variety || "");
+          setBuyingFrequency(data.product?.buyingFrequency || "once");
+          setStateVal(data.contractorInfo?.state || "");
+          setContractorName(data.contractorInfo?.name || "");
+          setContractorPhone(data.contractorInfo?.phone || "");
+          setBusinessType(data.contractorInfo?.businessType || "Farmer");
+          setImages((data.images || []).map((url) => ({ url })));
         })
-        .catch(err => {
-          toast.error("Failed to load contract for editing.");
+        .catch((err) => {
+          toast.error(t("failedLoadContract"));
         })
-
-      setLoading(false)
+        .finally(() => setLoading(false));
     }
   }, [isEditing, edit]);
 
-  // Helpers
-  // const addImages = (fileList) => {
-  //   const newFiles = Array.from(fileList).slice(0, 6); // limit 6 images
-  //   const mapped = newFiles.map((file) => ({
-  //     file,
-  //     url: URL.createObjectURL(file),
-  //   }));
-  //   setImages((prev) => [...prev, ...mapped].slice(0, 6)); // keep max 6
-  // };
-
   const removeImageAt = (index) => {
     setImages((prev) => {
-      // revoke objectURL
       const removed = prev[index];
-      if (removed?.url) URL.revokeObjectURL(removed.url);
+      if (removed?.url && removed.url.startsWith("blob:")) URL.revokeObjectURL(removed.url);
       return prev.filter((_, i) => i !== index);
     });
   };
@@ -149,25 +123,25 @@ export default function SellBuyWizard() {
     });
   };
 
-  // Simple validators per step
+  // Validators
   const validateStep = (s) => {
     const e = {};
     if (s === 1) {
-      if (!title.trim()) e.title = "Title is required";
-      if (!productName.trim()) e.productName = "Product name required";
-      if (!productVariety.trim()) e.productVariety = "Variety required";
-      if (!stateVal) e.stateVal = "State is required";
-      if (!location.trim() && !district) e.location = "Location or district required";
+      if (!title.trim()) e.title = t("errTitle");
+      if (!productName.trim()) e.productName = t("errProductName");
+      if (!productVariety.trim()) e.productVariety = t("errProductVariety");
+      if (!stateVal) e.stateVal = t("errState");
+      if (!location.trim() && !district) e.location = t("errLocation");
     }
     if (s === 2) {
       if (!quantityAmount || Number(quantityAmount) <= 0)
-        e.quantityAmount = "Quantity amount must be > 0";
-      if (!priceAmount || Number(priceAmount) <= 0) e.priceAmount = "Price must be > 0";
+        e.quantityAmount = t("errQuantityAmount");
+      if (!priceAmount || Number(priceAmount) <= 0) e.priceAmount = t("errPriceAmount");
     }
     if (s === 3) {
-      if (!contractorName.trim()) e.contractorName = "Name required";
+      if (!contractorName.trim()) e.contractorName = t("errContractorName");
       if (!contractorPhone.trim() || contractorPhone.length < 7)
-        e.contractorPhone = "Enter a valid phone";
+        e.contractorPhone = t("errContractorPhone");
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -181,7 +155,6 @@ export default function SellBuyWizard() {
   const prev = () => setStep((s) => Math.max(1, s - 1));
 
   const buildPayload = async () => {
-    // Build object that matches ContractSchema
     const payload = {
       type,
       postingDate,
@@ -198,7 +171,7 @@ export default function SellBuyWizard() {
       contractorInfo: {
         name: contractorName.trim(),
         state: stateVal,
-        image: contractorImage ? contractorImage.file.name : undefined, // backend should accept file upload
+        image: contractorImage ? contractorImage.file.name : undefined,
         phone: contractorPhone.trim(),
       },
       images: images.map((i) => i.url),
@@ -209,6 +182,7 @@ export default function SellBuyWizard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     // final validation (all steps)
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
       setStep(1);
@@ -217,124 +191,94 @@ export default function SellBuyWizard() {
 
     const payload = await buildPayload();
 
-
-
     // If you want to send files, use FormData
     const formData = new FormData();
-    formData.append("payload", payload);
-    console.log("Payload to submit:", formData);
-
+    formData.append("payload", JSON.stringify(payload));
     if (contractorImage?.file) formData.append("contractorImage", contractorImage.file);
 
-    // Demo: show payload in alert (remove in production)
-    // alert(JSON.stringify(payload, null, 2));
-
     try {
-
       let res;
       if (isEditing) {
-        // Update
-        res = await putJSON(`/requirements/${edit}`, payload); // Use PATCH/PUT as your backend supports
+        res = await putJSON(`/requirements/${edit}`, payload);
       } else {
         res = await postJSON("/requirements", payload);
       }
       if (!res.success) {
-        throw new Error(res.message || "Failed to create contract");
+        throw new Error(res.message || t("errSubmit"));
       }
 
-      toast(res.message);
+      toast.success(res.message || t("submitSuccess"));
       if (isEditing) {
-        navigate('/market/farmer');
+        navigate("/market/farmer");
       } else {
-        navigate('/market-place');
+        navigate("/market-place");
       }
       window.location.reload();
-
-
     } catch (err) {
       console.error(err);
-
-      alert("Error submitting: " + (err.message || err));
+      toast.error(t("errSubmitting") + ": " + (err.message || ""));
     }
   };
 
-  // Small UI helpers
   const stepProgress = Math.round(((step - 1) / 2) * 100);
 
-  if (Loading) return <div >
-    Loading...
-  </div>
+  if (Loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        {t("loading")}
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-start justify-center py-12 px-6">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10">
-
-
-
-        {/* LEFT SECTION */}
-        <div className="flex flex-col justify-start px-6 w-1/2 w-full">
+        {/* LEFT */}
+        <div className="flex flex-col justify-start px-6 w-full">
           <div className="flex items-center gap-3">
             <div className="text-green-600 p-2 rounded-full bg-green-50">
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.136 
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.136 
                   0-2.224-.137-3.236-.394L3 20l1.394-4.763A7.962 
-                  7.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
+                  7.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-green-600">
-                Required information
-              </h3>
+              <h3 className="text-lg font-semibold text-green-600">{t("requiredInfo")}</h3>
               <div className="w-24 h-0.5 bg-amber-300 mt-1 rounded"></div>
             </div>
           </div>
 
           <div className="mt-12">
-            <img
-              src={farm}
-              alt="farmer"
-              className="rounded-lg shadow w-full object-cover"
-            />
+            <img src={farm} alt="farmer" className="rounded-lg shadow w-full object-cover" />
             <p className="mt-8 text-sm text-gray-500 leading-relaxed">
-              Please select your requirement and fill in all the required
-              fields to start selling or buying your agri commodities now!
+              {t("leftDescription")}
             </p>
           </div>
         </div>
-        <div className="w-1/2 w-full max-w-4xl mx-auto bg-white rounded-2xl shadow p-6">
+
+        {/* RIGHT */}
+        <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow p-6">
           {/* Header / Stepper */}
           <div className="mb-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-800">
-                {isEditing ? "Update Contract" : "Create Contract"}
+                {isEditing ? t("updateContract") : t("createContract")}
               </h2>
 
-              <div className="text-sm text-gray-500">Step {step} of 3</div>
+              <div className="text-sm text-gray-500">
+                {t("step")} {step} {t("of")} 3
+              </div>
             </div>
 
             <div className="mt-4">
               <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                <div
-                  className="h-2 bg-green-500 transition-all"
-                  style={{ width: `${stepProgress}%` }}
-                  aria-hidden
-                />
+                <div className="h-2 bg-green-500 transition-all" style={{ width: `${stepProgress}%` }} aria-hidden />
               </div>
 
               <div className="flex justify-between text-xs text-gray-600 mt-3">
-                <div className={`${step >= 1 ? "text-green-600 font-medium" : ""}`}>Basic</div>
-                <div className={`${step >= 2 ? "text-green-600 font-medium" : ""}`}>Quantity & Price</div>
-                <div className={`${step >= 3 ? "text-green-600 font-medium" : ""}`}>Contractor</div>
+                <div className={`${step >= 1 ? "text-green-600 font-medium" : ""}`}>{t("basic")}</div>
+                <div className={`${step >= 2 ? "text-green-600 font-medium" : ""}`}>{t("quantityPrice")}</div>
+                <div className={`${step >= 3 ? "text-green-600 font-medium" : ""}`}>{t("contractor")}</div>
               </div>
             </div>
           </div>
@@ -353,7 +297,7 @@ export default function SellBuyWizard() {
                       onChange={() => setType("sell")}
                       className="form-radio h-4 w-4 text-green-600"
                     />
-                    <span className="ml-2 text-sm">Sell</span>
+                    <span className="ml-2 text-sm">{t("sell")}</span>
                   </label>
 
                   <label className="inline-flex items-center">
@@ -365,12 +309,12 @@ export default function SellBuyWizard() {
                       onChange={() => setType("buy")}
                       className="form-radio h-4 w-4 text-green-600"
                     />
-                    <span className="ml-2 text-sm">Buy</span>
+                    <span className="ml-2 text-sm">{t("buy")}</span>
                   </label>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Posting date</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("postingDate")}</label>
                   <input
                     type="date"
                     value={postingDate}
@@ -380,12 +324,12 @@ export default function SellBuyWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Title</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("title")}</label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Short descriptive title"
+                    placeholder={t("titlePlaceholder")}
                     className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-300"
                   />
                   {errors.title && <div className="text-xs text-red-600 mt-1">{errors.title}</div>}
@@ -393,24 +337,24 @@ export default function SellBuyWizard() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Product name</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("productName")}</label>
                     <input
                       type="text"
                       value={productName}
                       onChange={(e) => setProductName(e.target.value)}
-                      placeholder="e.g. Rice"
+                      placeholder={t("productNamePlaceholder")}
                       className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-300"
                     />
                     {errors.productName && <div className="text-xs text-red-600 mt-1">{errors.productName}</div>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Variety</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("variety")}</label>
                     <input
                       type="text"
                       value={productVariety}
                       onChange={(e) => setProductVariety(e.target.value)}
-                      placeholder="e.g. Basmati"
+                      placeholder={t("varietyPlaceholder")}
                       className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-300"
                     />
                     {errors.productVariety && <div className="text-xs text-red-600 mt-1">{errors.productVariety}</div>}
@@ -418,7 +362,7 @@ export default function SellBuyWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Buying frequency</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("buyingFrequency")}</label>
                   <select
                     value={buyingFrequency}
                     onChange={(e) => setBuyingFrequency(e.target.value)}
@@ -426,7 +370,7 @@ export default function SellBuyWizard() {
                   >
                     {FREQUENCY_OPTIONS.map((f) => (
                       <option key={f} value={f}>
-                        {f}
+                        {t(f)}
                       </option>
                     ))}
                   </select>
@@ -434,7 +378,7 @@ export default function SellBuyWizard() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">State</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("state")}</label>
                     <select
                       value={stateVal}
                       onChange={(e) => {
@@ -443,7 +387,7 @@ export default function SellBuyWizard() {
                       }}
                       className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-300"
                     >
-                      <option value="">Select state</option>
+                      <option value="">{t("selectState")}</option>
                       {Object.keys(STATES).map((s) => (
                         <option key={s} value={s}>
                           {s}
@@ -454,14 +398,14 @@ export default function SellBuyWizard() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">District</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("district")}</label>
                     <select
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
                       disabled={!stateVal}
                       className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-300 disabled:bg-gray-100"
                     >
-                      <option value="">Select district</option>
+                      <option value="">{t("selectDistrict")}</option>
                       {stateVal &&
                         STATES[stateVal].map((d) => (
                           <option key={d} value={d}>
@@ -472,12 +416,12 @@ export default function SellBuyWizard() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Location (optional)</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("locationOptional")}</label>
                     <input
                       type="text"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Town / market / village"
+                      placeholder={t("locationPlaceholder")}
                       className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-300"
                     />
                     {errors.location && <div className="text-xs text-red-600 mt-1">{errors.location}</div>}
@@ -491,10 +435,8 @@ export default function SellBuyWizard() {
               <div className="grid grid-cols-1 gap-4">
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-3">
-                    <label className="block text-sm font-medium text-gray-700">Note</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("note")}</label>
                     <textarea
-                      type="number"
-                      min="0"
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
                       className="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-300"
@@ -502,9 +444,8 @@ export default function SellBuyWizard() {
                     {errors.note && <div className="text-xs text-red-600 mt-1">{errors.note}</div>}
                   </div>
 
-
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Quantity amount</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("quantityAmount")}</label>
                     <input
                       type="number"
                       min="0"
@@ -516,7 +457,7 @@ export default function SellBuyWizard() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Quantity unit</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("quantityUnit")}</label>
                     <select
                       value={quantityUnit}
                       onChange={(e) => setQuantityUnit(e.target.value)}
@@ -533,7 +474,7 @@ export default function SellBuyWizard() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Price amount</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("priceAmount")}</label>
                     <input
                       type="number"
                       min="0"
@@ -545,7 +486,7 @@ export default function SellBuyWizard() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Price unit</label>
+                    <label className="block text-sm font-medium text-gray-700">{t("priceUnit")}</label>
                     <select
                       value={priceUnit}
                       onChange={(e) => setPriceUnit(e.target.value)}
@@ -562,10 +503,9 @@ export default function SellBuyWizard() {
 
                 {/* Image upload */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Upload product images (max 6)</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("uploadImages")}</label>
                   <CloudinaryUploader images={images} setImages={setImages} />
 
-                  {/* previews */}
                   {images.length > 0 && (
                     <div className="mt-3 grid grid-cols-3 gap-3">
                       {images.map((img, idx) => (
@@ -575,6 +515,7 @@ export default function SellBuyWizard() {
                             type="button"
                             onClick={() => removeImageAt(idx)}
                             className="absolute top-1 right-1 bg-white rounded-full p-1 shadow"
+                            aria-label={t("removeImage")}
                           >
                             <svg className="h-4 w-4 text-red-600" viewBox="0 0 20 20" fill="currentColor">
                               <path fillRule="evenodd" d="M6 6l8 8M6 14L14 6" clipRule="evenodd" />
@@ -592,7 +533,7 @@ export default function SellBuyWizard() {
             <div className={`${step === 3 ? "block" : "hidden"}`}>
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Contractor name</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("contractorName")}</label>
                   <input
                     type="text"
                     value={contractorName}
@@ -603,7 +544,7 @@ export default function SellBuyWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("phone")}</label>
                   <input
                     type="tel"
                     value={contractorPhone}
@@ -615,7 +556,7 @@ export default function SellBuyWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Business type</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("businessType")}</label>
                   <input
                     type="text"
                     value={businessType}
@@ -625,13 +566,8 @@ export default function SellBuyWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Contractor image (optional)</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleContractorImage(e.target.files[0])}
-                    className="mt-2"
-                  />
+                  <label className="block text-sm font-medium text-gray-700">{t("contractorImage")}</label>
+                  <input type="file" accept="image/*" onChange={(e) => handleContractorImage(e.target.files[0])} className="mt-2" />
                   {contractorImage && (
                     <div className="mt-3 w-40 h-40 border overflow-hidden rounded">
                       <img src={contractorImage.url} alt="contractor" className="w-full h-full object-cover" />
@@ -641,53 +577,42 @@ export default function SellBuyWizard() {
 
                 {/* Review summary */}
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <h4 className="font-medium text-gray-800">Review</h4>
+                  <h4 className="font-medium text-gray-800">{t("review")}</h4>
                   <div className="text-sm text-gray-700 mt-2 space-y-1">
-                    <div><strong>Type:</strong> {type}</div>
-                    <div><strong>Title:</strong> {title}</div>
-                    <div><strong>Posting date:</strong> {postingDate}</div>
-                    <div><strong>Product:</strong> {productName} ({productVariety})</div>
-                    <div><strong>Location:</strong> {location || `${district ? district + ", " : ""}${stateVal}`}</div>
-                    <div><strong>Quantity:</strong> {quantityAmount} {quantityUnit}</div>
-                    <div><strong>Price:</strong> {priceAmount} / {priceUnit}</div>
-                    <div><strong>Images:</strong> {images.length}</div>
-                    <div><strong>Contractor:</strong> {contractorName} • {contractorPhone}</div>
+                    <div><strong>{t("type")}:</strong> {t(type)}</div>
+                    <div><strong>{t("title")}:</strong> {title}</div>
+                    <div><strong>{t("postingDate")}:</strong> {postingDate}</div>
+                    <div><strong>{t("product")}:</strong> {productName} ({productVariety})</div>
+                    <div><strong>{t("location")}:</strong> {location || `${district ? district + ", " : ""}${stateVal}`}</div>
+                    <div><strong>{t("quantity")}:</strong> {quantityAmount} {quantityUnit}</div>
+                    <div><strong>{t("price")}:</strong> {priceAmount} / {priceUnit}</div>
+                    <div><strong>{t("images")}:</strong> {images.length}</div>
+                    <div><strong>{t("contractor")}:</strong> {contractorName} • {contractorPhone}</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Navigation buttons */}
+            {/* Navigation */}
             <div className="mt-6 flex items-center justify-between">
               <div>
                 {step > 1 && (
-                  <button
-                    type="button"
-                    onClick={prev}
-                    className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  >
-                    Back
+                  <button type="button" onClick={prev} className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200">
+                    {t("back")}
                   </button>
                 )}
               </div>
 
               <div className="flex gap-3">
                 {step < 3 && (
-                  <button
-                    type="button"
-                    onClick={next}
-                    className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700"
-                  >
-                    Next
+                  <button type="button" onClick={next} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">
+                    {t("next")}
                   </button>
                 )}
 
                 {step === 3 && (
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700"
-                  >
-                    Submit
+                  <button type="submit" className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">
+                    {t("submit")}
                   </button>
                 )}
               </div>

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import fertilizerData from "../data/fertilizerData";
 import { useLanguage } from "../contexts/LanguageContext";
 import { jsPDF } from "jspdf";
+import { toast } from "react-toastify";
 
 /* ------------------- Load font from CDN ------------------- */
 async function fetchFontAsBase64(url) {
@@ -13,10 +14,7 @@ async function fetchFontAsBase64(url) {
   const chunkSize = 0x8000;
 
   for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode.apply(
-      null,
-      bytes.subarray(i, i + chunkSize)
-    );
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
   }
 
   return btoa(binary);
@@ -24,9 +22,10 @@ async function fetchFontAsBase64(url) {
 
 export default function FertilizerGuidance() {
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" }); // or "smooth"
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
-  const { language } = useLanguage();
+
+  const { language, t } = useLanguage();
   const lang = language === "ml" ? "ml" : "en";
 
   const cropKeys = Object.keys(fertilizerData);
@@ -85,26 +84,22 @@ export default function FertilizerGuidance() {
           fontLoadedRef.current = true;
         } catch (e) {
           console.error("Malayalam font loading failed:", e);
+          // continue; fallback to default font
         }
       }
 
       const pdfFont = lang === "ml" && fontLoadedRef.current ? "NotoMalayalam" : "helvetica";
-
       doc.setFont(pdfFont);
 
       /* ----------- Page Title ----------- */
       doc.setFontSize(20);
-      const title = lang === "ml" ? "വളം മാർഗ്ഗനിർദ്ദേശങ്ങൾ" : "Fertilizer Guidance";
+      const title = t("fertilizerGuideTitle");
       doc.text(title, margin, cursorY);
       cursorY += 28;
 
       /* Subtitle */
       doc.setFontSize(11);
-      const subtitle =
-        lang === "ml"
-          ? "ശരിയായ വള അളവും സമയവും — സ്മാർട്ട് നിർദ്ദേശങ്ങൾ"
-          : "Smart suggestions for right fertilizer quantity & timing.";
-
+      const subtitle = t("fertilizerGuideSubtitle");
       const subtitleLines = doc.splitTextToSize(subtitle, maxWidth);
       doc.text(subtitleLines, margin, cursorY);
       cursorY += subtitleLines.length * 14 + 10;
@@ -135,20 +130,20 @@ export default function FertilizerGuidance() {
         doc.setFontSize(11);
 
         /* NPK */
-        const npkText = `${lang === "ml" ? "NPK:" : "NPK:"} ${crop.npk}`;
+        const npkText = `${t("NPKLabel")} ${crop.npk}`;
         const npkLines = doc.splitTextToSize(npkText, maxWidth);
         doc.text(npkLines, margin, cursorY);
         cursorY += npkLines.length * 14 + 6;
 
         /* Weather */
-        const weatherLabel = lang === "ml" ? "കാലാവസ്ഥ മുന്നറിയിപ്പ്:" : "Weather Precaution:";
+        const weatherLabel = t("weatherPrecautionLabel");
         const weatherText = `${weatherLabel} ${crop.weather}`;
         const weatherLines = doc.splitTextToSize(weatherText, maxWidth);
         doc.text(weatherLines, margin, cursorY);
         cursorY += weatherLines.length * 14 + 6;
 
         /* Key takeaway */
-        const keyLabel = lang === "ml" ? "പ്രധാന കുറിപ്പ്:" : "Key Takeaway:";
+        const keyLabel = t("keyTakeawayLabel");
         const keyText = `${keyLabel} ${crop.key}`;
         const keyLines = doc.splitTextToSize(keyText, maxWidth);
         doc.text(keyLines, margin, cursorY);
@@ -164,7 +159,7 @@ export default function FertilizerGuidance() {
       doc.save(fileName);
     } catch (err) {
       console.error("PDF error:", err);
-      alert("PDF generation failed. Check console.");
+      toast.error(t("pdfFailed"));
     }
 
     setIsGenerating(false);
@@ -175,7 +170,7 @@ export default function FertilizerGuidance() {
     <div className="w-full flex justify-center py-10 px-4">
       <div className="max-w-6xl w-full">
         <h1 className="text-3xl font-semibold text-center mb-8">
-          {lang === "ml" ? "വളം മാർഗ്ഗനിർദ്ദേശങ്ങൾ" : "Fertilizer Guidance"}
+          {t("fertilizerGuideTitle")}
         </h1>
 
         {/* SEARCH + FILTERS */}
@@ -184,7 +179,7 @@ export default function FertilizerGuidance() {
             {/* Search */}
             <input
               type="text"
-              placeholder={lang === "ml" ? "വിളയുടെ പേര് തിരയുക…" : "Search crop…"}
+              placeholder={t("searchPlaceholder")}
               className="px-4 py-3 rounded-xl border bg-gray-50 shadow-sm"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -196,11 +191,11 @@ export default function FertilizerGuidance() {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="all">{lang === "ml" ? "എല്ലാ വിഭാഗങ്ങളും" : "All Categories"}</option>
-              <option value="cereal">{lang === "ml" ? "ധാന്യങ്ങൾ" : "Cereals"}</option>
-              <option value="plantation">{lang === "ml" ? "തോട്ടവിളകൾ" : "Plantation"}</option>
-              <option value="spice">{lang === "ml" ? "മസാല" : "Spices"}</option>
-              <option value="vegetable">{lang === "ml" ? "പച്ചക്കറികൾ" : "Vegetables"}</option>
+              <option value="all">{t("allCategories")}</option>
+              <option value="cereal">{t("cereals")}</option>
+              <option value="plantation">{t("plantation")}</option>
+              <option value="spice">{t("spices")}</option>
+              <option value="vegetable">{t("vegetables")}</option>
             </select>
 
             {/* Priority */}
@@ -209,10 +204,10 @@ export default function FertilizerGuidance() {
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
             >
-              <option value="all">{lang === "ml" ? "എല്ലാ NPK" : "All NPK"}</option>
-              <option value="high-n">{lang === "ml" ? "ഉയർന്ന N" : "High Nitrogen"}</option>
-              <option value="high-p">{lang === "ml" ? "ഉയർന്ന P" : "High Phosphorus"}</option>
-              <option value="high-k">{lang === "ml" ? "ഉയർന്ന K" : "High Potassium"}</option>
+              <option value="all">{t("allNPK")}</option>
+              <option value="high-n">{t("highN")}</option>
+              <option value="high-p">{t("highP")}</option>
+              <option value="high-k">{t("highK")}</option>
             </select>
 
             {/* Weather */}
@@ -221,12 +216,10 @@ export default function FertilizerGuidance() {
               value={weather}
               onChange={(e) => setWeather(e.target.value)}
             >
-              <option value="all">{lang === "ml" ? "എല്ലാം" : "All Weather"}</option>
-              <option value="rain-sensitive">{lang === "ml" ? "മഴ-സെൻസിറ്റീവ്" : "Rain Sensitive"}</option>
-              <option value="waterlogging-sensitive">
-                {lang === "ml" ? "വെള്ളക്കെട്ട്" : "Waterlogging Sensitive"}
-              </option>
-              <option value="moisture-sensitive">{lang === "ml" ? "നനവ്" : "Moisture Sensitive"}</option>
+              <option value="all">{t("allWeather")}</option>
+              <option value="rain-sensitive">{t("rainSensitive")}</option>
+              <option value="waterlogging-sensitive">{t("waterloggingSensitive")}</option>
+              <option value="moisture-sensitive">{t("moistureSensitive")}</option>
             </select>
           </div>
         </div>
@@ -244,21 +237,19 @@ export default function FertilizerGuidance() {
                   >
                     <h2 className="text-xl font-semibold mb-2">{crop.name}</h2>
 
-                    <p><b>NPK:</b> {crop.npk}</p>
+                    <p><b>{t("NPKLabel")}</b> {crop.npk}</p>
                     <p>
-                      <b>{lang === "ml" ? "കാലാവസ്ഥ മുന്നറിയിപ്പ്:" : "Weather:"}</b>{" "}
-                      {crop.weather}
+                      <b>{t("weatherPrecautionLabel")}</b> {crop.weather}
                     </p>
                     <p>
-                      <b>{lang === "ml" ? "പ്രധാന കുറിപ്പ്:" : "Key:"}</b>{" "}
-                      {crop.key}
+                      <b>{t("keyTakeawayLabel")}</b> {crop.key}
                     </p>
                   </div>
                 );
               })
             ) : (
               <p className="text-gray-500 text-center col-span-2">
-                {lang === "ml" ? "ഒന്നും കണ്ടെത്താനായില്ല." : "No matching crops found."}
+                {t("noMatchingCrops")}
               </p>
             )}
           </div>
@@ -269,18 +260,14 @@ export default function FertilizerGuidance() {
       <button
         onClick={generatePDF}
         disabled={isGenerating}
+        title={t("generatePDF")}
+        aria-label={t("generatePDF")}
         className="fixed bottom-6 left-6 bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full shadow-xl flex items-center justify-center"
       >
         {isGenerating ? (
           <div className="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"></div>
         ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
               d="M12 3v12m0 0l4-4m-4 4l-4-4m14 9H2" />
           </svg>

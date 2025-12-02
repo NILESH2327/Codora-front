@@ -14,16 +14,22 @@ import {
 import { getJSON, postJSON } from "../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function UpdateProfilePage() {
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" }); // or "smooth"
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
+
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const { state } = useLocation();
+  const phone = state?.phone;
+
   const [profile, setProfile] = useState({
     name: "",
     email: "",
-    phone: "",
+    phone: phone || "",
     soilType: "",
     location: {
       latitude: "",
@@ -39,52 +45,43 @@ export default function UpdateProfilePage() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [locLoading, setLocLoading] = useState(false);
-  const [title, setTitle] = useState("Update Profile");
-  const { state } = useLocation();
-  const phone = state?.phone;
 
-  // Load profile on mount
   useEffect(() => {
     (async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-
-        const res = await getJSON(`/farmer/profile`);
-        setProfile((prev) => ({ ...prev, ...res }));
-        if (phone) setTitle("Complete Your Profile");
+        const res = await getJSON("/farmer/profile", token);
+        if (res) setProfile((prev) => ({ ...prev, ...res }));
       } catch (err) {
-        console.log("Server not available");
+        console.log("Server not available", err);
+        toast.error(t("serverNotAvailable"));
       }
     })();
-  }, [phone]);
+  }, []);
 
-  // Validation function
-  const validateProfile = (profile) => {
+  // Validation uses translated messages
+  const validateProfile = (p) => {
     const errs = {};
-    if (!profile.name.trim()) errs.name = "Name is required";
+    if (!p.name?.trim()) errs.name = t("nameRequired");
 
-    if (!profile.email.trim()) errs.email = "Email is required";
-    else if (!/^[\w-.]+@[\w-]+\.[\w-.]+$/.test(profile.email))
-      errs.email = "Invalid email";
+    if (!p.email?.trim()) errs.email = t("emailRequired");
+    else if (!/^[\w-.]+@[\w-]+\.[\w-.]+$/.test(p.email))
+      errs.email = t("invalidEmail");
 
-    if (!profile.phone.trim()) errs.phone = "Phone is required";
-    else if (!/^\d{10}$/.test(profile.phone))
-      errs.phone = "Phone must be 10 digits";
+    if (!p.phone?.trim()) errs.phone = t("phoneRequired");
+    else if (!/^\d{10}$/.test(p.phone)) errs.phone = t("phoneInvalid");
 
-    if (!profile.primaryCrop.trim())
-      errs.primaryCrop = "Primary crop is required";
-    if (!profile.irrigation.trim())
-      errs.irrigation = "Irrigation is required";
+    if (!p.primaryCrop?.trim()) errs.primaryCrop = t("primaryCropRequired");
+    if (!p.irrigation?.trim()) errs.irrigation = t("irrigationRequired");
 
-    if (!profile.landSize.trim()) errs.landSize = "Land size is required";
-    else if (isNaN(Number(profile.landSize)) || Number(profile.landSize) <= 0)
-      errs.landSize = "Enter a valid number";
+    if (!String(p.landSize || "").trim()) errs.landSize = t("landSizeRequired");
+    else if (isNaN(Number(p.landSize)) || Number(p.landSize) <= 0)
+      errs.landSize = t("landSizeInvalid");
 
-    if (!profile.soilType.trim()) errs.soilType = "Soil type is required";
+    if (!p.soilType?.trim()) errs.soilType = t("soilTypeRequired");
 
-    if (!profile.location.district.trim())
-      errs.district = "Location is required";
+    if (!p.location?.district?.trim()) errs.district = t("locationRequired");
 
     return errs;
   };
@@ -93,20 +90,31 @@ export default function UpdateProfilePage() {
   const autoFillLocation = () => {
     setLocLoading(true);
 
+    if (!navigator.geolocation) {
+      toast.error(t("geolocationNotSupported"));
+      setLocLoading(false);
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const lat = pos.coords.latitude.toFixed(5);
-        const long = pos.coords.longitude.toFixed(5);
-        const city = await getCityName(lat, long);
-        setProfile((prev) => ({
-          ...prev,
-          location: { latitude: lat, longitude: long, district: city },
-        }));
-        setLocLoading(false);
-        setErrors((prev) => ({ ...prev, district: null }));
+        try {
+          const lat = pos.coords.latitude.toFixed(5);
+          const long = pos.coords.longitude.toFixed(5);
+          const city = await getCityName(lat, long);
+          setProfile((prev) => ({
+            ...prev,
+            location: { latitude: lat, longitude: long, district: city },
+          }));
+          setErrors((prev) => ({ ...prev, district: null }));
+        } catch (err) {
+          toast.error(t("failedDetectLocation"));
+        } finally {
+          setLocLoading(false);
+        }
       },
       () => {
-        alert("Failed to access location");
+        toast.error(t("failedAccessLocation"));
         setLocLoading(false);
       },
       {
@@ -124,32 +132,32 @@ export default function UpdateProfilePage() {
     if (Object.keys(errs).length) return;
 
     setLoading(true);
-
     try {
       const res = await postJSON("/farmer/update", profile);
-      console.log("Response from server:", res);
-      if (res && res._id) {
-        toast.success("Profile updated!");
+      if (res && (res._id || res.success)) {
+        toast.success(t("profileUpdated"));
         localStorage.setItem("isProfileComplete", "true");
         navigate("/dashboard");
         window.scrollTo(0, 0);
       } else {
-        toast.error("Update failed!");
+        toast.error(t("updateFailed"));
       }
     } catch (err) {
-      alert("Update failed!");
-      console.log(err);
+      console.error(err);
+      toast.error(t("updateFailed"));
     }
-
     setLoading(false);
   };
 
   async function getCityName(lat, lon) {
+    // keep your API key or replace with environment variable
     const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5&appid=0c0fdbaea0ed2ec1f0f82ad4b62eea1b`;
     const res = await fetch(url);
     const data = await res.json();
     return data[0]?.name || "";
   }
+
+  const title = phone ? t("completeProfile") : t("updateProfile");
 
   return (
     <div
@@ -162,82 +170,80 @@ export default function UpdateProfilePage() {
         <h1 className="text-3xl font-bold text-green-800 mb-8 text-center">
           {title}
         </h1>
+
         <div className="p-8 rounded-2xl shadow-lg border grid grid-cols-1 md:grid-cols-2 gap-6 bg-white">
           <InputField
-            label="Full Name"
+            labelKey="fullName"
             icon={<User className="text-green-600" />}
             value={profile.name}
-            placeholder="Enter your name"
+            placeholderKey="enterYourName"
             onChange={(v) => setProfile({ ...profile, name: v })}
             error={errors.name}
           />
 
           <InputField
-            label="Email"
+            labelKey="emailLabel"
             icon={<Mail className="text-green-600" />}
             value={profile.email}
-            placeholder="Enter email"
+            placeholderKey="enterEmail"
             onChange={(v) => setProfile({ ...profile, email: v })}
             error={errors.email}
           />
 
           <InputField
-            label="Phone"
+            labelKey="phoneLabel"
             icon={<Phone className="text-green-600" />}
             value={profile.phone}
-            placeholder="Phone number"
+            placeholderKey="phonePlaceholder"
             onChange={(v) => setProfile({ ...profile, phone: v })}
             error={errors.phone}
           />
 
           <InputField
-            label="Primary Crop"
+            labelKey="primaryCropLabel"
             icon={<Sprout className="text-green-600" />}
             value={profile.primaryCrop}
-            placeholder="Eg: Paddy, Banana"
+            placeholderKey="primaryCropPlaceholder"
             onChange={(v) => setProfile({ ...profile, primaryCrop: v })}
             error={errors.primaryCrop}
           />
 
           <InputField
-            label="Irrigation Method"
+            labelKey="irrigationLabel"
             icon={<Droplet className="text-green-600" />}
             value={profile.irrigation}
-            placeholder="Eg: Drip, Flood, Sprinkler"
+            placeholderKey="irrigationPlaceholder"
             onChange={(v) => setProfile({ ...profile, irrigation: v })}
             error={errors.irrigation}
           />
 
           <InputField
-            label="Land Size (in acres)"
+            labelKey="landSizeLabel"
             icon={<Ruler className="text-green-600" />}
             value={profile.landSize}
-            placeholder="Eg: 2.5"
+            placeholderKey="landSizePlaceholder"
             onChange={(v) => setProfile({ ...profile, landSize: v })}
             error={errors.landSize}
           />
 
-          {/* Soil Type */}
           <InputField
-            label="Soil Type"
+            labelKey="soilTypeLabel"
             icon={<Mountain className="text-green-600" />}
             value={profile.soilType}
-            placeholder="Soil type"
+            placeholderKey="soilTypePlaceholder"
             onChange={(v) => setProfile({ ...profile, soilType: v })}
             error={errors.soilType}
           />
 
           {/* Location with GPS */}
           <div>
-            <label className="text-sm font-semibold text-gray-600">
-              Location
-            </label>
+            <label className="text-sm font-semibold text-gray-600">{t("locationLabel")}</label>
             <div className="flex flex-col gap-1 border rounded-xl p-3 bg-gray-50 shadow-sm">
               <div className="flex items-center gap-2">
                 <input
                   type="text"
                   className="flex-grow bg-transparent outline-none text-sm"
-                  placeholder="Detect your location"
+                  placeholder={t("detectYourLocation")}
                   value={
                     profile.location.district
                       ? `${profile.location.district} (${profile.location.latitude}, ${profile.location.longitude})`
@@ -250,11 +256,7 @@ export default function UpdateProfilePage() {
                   onClick={autoFillLocation}
                   disabled={locLoading}
                   className={`p-2 rounded-lg text-green-800 transition flex items-center justify-center
-                    ${
-                      locLoading
-                        ? "bg-green-100 cursor-not-allowed"
-                        : "bg-green-200 hover:bg-green-300"
-                    }`}
+                    ${locLoading ? "bg-green-100 cursor-not-allowed" : "bg-green-200 hover:bg-green-300"}`}
                 >
                   {locLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -265,32 +267,25 @@ export default function UpdateProfilePage() {
               </div>
 
               {!profile.location.district && (
-                <p className="text-[11px] text-gray-500">
-                  Tap the GPS button to auto-fill your village / town using your
-                  current location.
-                </p>
+                <p className="text-[11px] text-gray-500">{t("tapGpsToDetect")}</p>
               )}
             </div>
             {errors.district && (
-              <div className="text-xs text-red-600 mt-1">
-                {errors.district}
-              </div>
+              <div className="text-xs text-red-600 mt-1">{errors.district}</div>
             )}
           </div>
 
           {/* Preferred Language */}
           <div>
             <label className="text-xs font-semibold text-gray-600 mb-1 block">
-              Preferred Language
+              {t("preferredLanguageLabel")}
             </label>
             <div className="flex items-center gap-2 border rounded-xl p-3 bg-gray-50 shadow-sm">
               <Languages className="text-green-600" />
               <select
                 className="flex-grow bg-transparent outline-none text-sm"
                 value={profile.language}
-                onChange={(e) =>
-                  setProfile({ ...profile, language: e.target.value })
-                }
+                onChange={(e) => setProfile({ ...profile, language: e.target.value })}
               >
                 <option value="ml">Malayalam</option>
                 <option value="en">English</option>
@@ -308,10 +303,10 @@ export default function UpdateProfilePage() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Saving...
+                  {t("saving")}
                 </>
               ) : (
-                "Save Changes"
+                t("saveChanges")
               )}
             </button>
           </div>
@@ -322,20 +317,17 @@ export default function UpdateProfilePage() {
 }
 
 /* Small Reusable Field Component */
-function InputField({ label, icon, value, placeholder, onChange, error }) {
+function InputField({ labelKey, icon, value, placeholderKey, onChange, error }) {
+  const { t } = useLanguage();
   return (
     <div>
-      <label className="text-xs font-semibold text-gray-600">{label}</label>
-      <div
-        className={`flex items-center gap-2 border rounded-xl p-3 bg-gray-50 shadow-sm ${
-          error ? "border-red-500" : ""
-        }`}
-      >
+      <label className="text-xs font-semibold text-gray-600">{t(labelKey)}</label>
+      <div className={`flex items-center gap-2 border rounded-xl p-3 bg-gray-50 shadow-sm ${error ? "border-red-500" : ""}`}>
         {icon}
         <input
           type="text"
           className="w-full bg-transparent outline-none text-sm"
-          placeholder={placeholder}
+          placeholder={t(placeholderKey)}
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
