@@ -284,7 +284,7 @@
   "generatePDF": "Download PDF",
   "pdfFailed": "PDF generation failed. Check console.",
 
-    "cropCalendarTitle": "Kerala Crop Calendar",
+  "cropCalendarTitle": "Kerala Crop Calendar",
   "cropCalendarSubtitle": "Kerala Crop Calendar – Plan Smart, Farm Better",
   "cropCalendarDescription": "A monthly guide to help farmers schedule operations efficiently, improve yield and prevent crop loss.",
   "toggleToMalayalam": "മലയാളം",
@@ -298,5 +298,7 @@
   "weatherPrecautionsTitle": "Weather Precautions",
   "keyTakeawaysTitle": "Key Takeaways",
   "noData": "No data available"
+
+  
 
 }
