@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { Microscope, Bug, BarChart, MapPin, CalendarDays, Sparkles, ScrollText, ShoppingCart, UserRound } from "lucide-react";
+import { Microscope, Bug, BarChart, MapPin, CalendarDays, Sparkles, ScrollText, ShoppingCart, UserRound, PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const FEATURES = [
   {
     to: "/upload",
@@ -51,19 +50,19 @@ const FEATURES = [
     title: "Nearby Agri Services",
     text: "Locate shops, labs and rentals.",
   },
- {
-  to: "/schemes",
-  icon: <ScrollText className="h-8 w-8 text-amber-300" />, // or FileText, Landmark, BadgePercent
-  title: "Schemes",
-  text: "Browse government support programs.",
-},
-{
-  to: "/knowledge-engine",
-  icon: <Sparkles className="h-8 w-8 text-emerald-300" />, // or Brain, Bot, Lightbulb
-  title: "Knowledge Engine",
-  text: "Ask agronomy questions and get answers.",
-},
- {
+  {
+    to: "/schemes",
+    icon: <ScrollText className="h-8 w-8 text-amber-300" />,
+    title: "Schemes",
+    text: "Browse government support programs.",
+  },
+  {
+    to: "/knowledge-engine",
+    icon: <Sparkles className="h-8 w-8 text-emerald-300" />,
+    title: "Knowledge Engine",
+    text: "Ask agronomy questions and get answers.",
+  },
+  {
     to: "/market-place/create-requirement",
     icon: <ShoppingCart className="h-8 w-8 text-emerald-300" />,
     title: "Create / Buy / Sell",
@@ -75,7 +74,21 @@ const FEATURES = [
     title: "Update Profile",
     text: "Edit your farm, crop and contact details.",
   },
+  // New entries added here
+  {
+    to: "/farms",
+    icon: <MapPin className="h-8 w-8 text-blue-400" />,
+    title: "Show All Farms",
+    text: "View a list and map of all registered farms.",
+  },
+  {
+    to: "/farms/add",
+    icon: <PlusCircle className="h-8 w-8 text-green-400" />,
+    title: "Add New Farm",
+    text: "Register a new farm with location and details.",
+  },
 ];
+
 
 
 const ViewTools= () => {

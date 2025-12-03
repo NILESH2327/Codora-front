@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { postJSON } from "../api";
-import { Sprout, CalendarDays, Leaf } from "lucide-react";
+import { Sprout, CalendarDays, Leaf, LandPlot } from "lucide-react";
 
 export default function AddCropForm() {
   const [form, setForm] = useState({
     cropName: "",
     variety: "",
     sowingDate: "",
+    farmName: ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ export default function AddCropForm() {
       className="min-h-screen flex items-center justify-center bg-cover bg-center p-6"
       style={{
         backgroundImage:
-          "url('./bgAddCrop.jpg')",
+          "url('/bgAddCrop.jpg')",
       }}
     >
       {/* Overlay */}
@@ -51,13 +52,15 @@ export default function AddCropForm() {
         </h2>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
+
+
           <div>
-            <label className="font-medium text-white">Crop Name</label>
+            <label className="font-medium text-white">Farm Name</label>
             <div className="flex items-center bg-white/80 rounded-lg p-2 mt-1 shadow-sm">
-              <Sprout className="text-green-700 mr-2" />
+              <LandPlot className="text-green-700 mr-2" />
               <input
-                name="cropName"
-                value={form.cropName}
+                name="farmName"
+                value={form.farmName}
                 onChange={handleChange}
                 placeholder="E.g. Paddy, Banana, Brinjal"
                 className="w-full p-2 bg-transparent outline-none"
@@ -65,6 +68,34 @@ export default function AddCropForm() {
               />
             </div>
           </div>
+
+          <div>
+            <label className="font-medium text-white">Crop Name</label>
+            <div className="flex items-center bg-white/80 rounded-lg p-2 mt-1 shadow-sm">
+              <Sprout className="text-green-700 mr-2" />
+              <select
+                name="cropName"
+                value={form.cropName}
+                onChange={handleChange}
+                className="w-full p-2 bg-transparent outline-none text-gray-800"
+                required
+              >
+                <option value="">Select a crop</option>
+                <option value="Paddy">Paddy (90 days)</option>
+                <option value="Banana">Banana (240 days)</option>
+                <option value="Coconut">Coconut</option>
+                <option value="Pepper">Pepper (210 days)</option>
+                <option value="Rubber">Rubber</option>
+                <option value="Tapioca">Tapioca (240 days)</option>
+                <option value="Ginger">Ginger (210 days)</option>
+                <option value="Turmeric">Turmeric (270 days)</option>
+                <option value="Vegetables_Mixed">Vegetables Mixed (40 days)</option>
+                <option value="Cashew">Cashew (150 days)</option>
+                <option value="Arecanut">Arecanut (180 days)</option>
+              </select>
+            </div>
+          </div>
+
 
           <div>
             <label className="font-medium text-white">Variety</label>
