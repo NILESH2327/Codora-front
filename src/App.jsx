@@ -47,6 +47,7 @@ import CropCalendar from "./components/CropCalendar";
 import UpdateScheme from './components/UpdateScheme';
 import { ModifyOrdersPage } from './pages/ModifyOrders';
 import ViewTools from './pages/ViewTools';
+import Chatbot from './pages/KnowledgeEngine';
 
 function App() {
   const [isLogged, setIsLogged] = useState(false);
@@ -82,9 +83,9 @@ function App() {
                 <Route path="/tools" element={<ViewTools />} />
 
                 {/* PLOTS */}
-                <Route path="/plot" element={<AllPlots />} />
-                <Route path="/plot/:id" element={<PlotDetails />} />
-                <Route path="/add-plot" element={<AddPlot />} />
+                <Route path="/farms" element={<AllPlots />} />
+                <Route path="/farms/:id" element={<PlotDetails />} />
+                <Route path="/farms/add" element={<AddPlot />} />
 
                 {/* OTP */}
                 <Route path="/verify-otp" element={<VerifyOtp />} />
@@ -131,6 +132,8 @@ function App() {
 
                 {/* Nearby service*/}
                 <Route path="/nearby-service" element={<NearbyAgriServices />} />
+                <Route path='/chatbot' element={<Chatbot/>}/>
+                
 
 
                 <Route path="/pestisides-scanner" element={<PesticideRestrictionChecker />} />

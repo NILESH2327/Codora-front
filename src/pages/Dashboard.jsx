@@ -11,7 +11,8 @@ import axios from "axios";
 // COMPONENTS
 import WeatherCard from "../components/WeatherCard";
 import Grid from "../components/Dashboard/Grid";
-import { postJSON } from "../api";
+import { getJSON, postJSON } from "../api";
+import CropCalendar from "../components/TasksComponent";
 
 const Dashboard = () => {
   const [cropTips, setCropTips] = useState([]);
@@ -37,13 +38,8 @@ const Dashboard = () => {
   // Fetch Market & Schemes
   const fetchData = async () => {
     try {
-      const [mres, sres] = await Promise.all([
-        api.get("/market/all"),
-        api.get("/scheme/all"),
-      ]);
-
-      if (mres.data.success) setMarketPrices(mres.data.data);
-      if (sres.data.success) setSchemes(sres.data.data);
+       const res = await getJSON('/tasks/today');
+       console.log(res);
     } catch (err) {
       console.error("Market/Schemes error:", err);
     }
@@ -146,79 +142,8 @@ const Dashboard = () => {
           {/* RIGHT */}
           <div className="space-y-8 mb-8">
             {/* TODAY PLANNER */}
-            <div className="bg-white rounded-2xl shadow-md border border-yellow-100 p-6">
-              <h2 className="text-lg font-bold flex items-center text-gray-900">
-                <Award className="mr-2 text-yellow-500" />
-                {t("todaysPlanner")}
-              </h2>
-
-              {/* ADD TASK */}
-              <form
-                className="mt-4 flex gap-2"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!newTask.trim()) return;
-
-                  setTasks((prev) => [
-                    ...prev,
-                    { id: Date.now(), text: newTask.trim(), done: false },
-                  ]);
-
-                  setNewTask("");
-                }}
-              >
-                <input
-                  type="text"
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                  placeholder={t("addTaskPlaceholder")}
-                  className="flex-1 px-3 py-2 text-xs border border-yellow-200 rounded-lg bg-yellow-50 focus:outline-none focus:ring-1 focus:ring-yellow-300"
-                />
-                <button
-                  type="submit"
-                  className="px-3 py-2 text-xs font-semibold bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition-colors"
-                >
-                  {t("add")}
-                </button>
-              </form>
-
-              {/* TASK LIST */}
-              <div className="space-y-2 mt-4 max-h-56 overflow-y-auto pr-1">
-                {tasks.length ? (
-                  tasks.map((task) => (
-                    <div
-                      key={task.id}
-                      className="flex items-start gap-2 p-2 rounded-lg bg-yellow-50 border border-yellow-100"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={task.done}
-                        onChange={() =>
-                          setTasks((prev) =>
-                            prev.map((t) =>
-                              t.id === task.id ? { ...t, done: !t.done } : t
-                            )
-                          )
-                        }
-                        className="mt-1 h-4 w-4 text-yellow-500 rounded border-yellow-300"
-                      />
-
-                      <p
-                        className={`text-xs text-gray-800 ${
-                          task.done ? "line-through text-gray-400" : ""
-                        }`}
-                      >
-                        {task.text}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-xs text-gray-500">
-                    {t("noTasks")}
-                  </p>
-                )}
-              </div>
-            </div>
+            
+            <CropCalendar/>
           </div>
         </div>
       </div>

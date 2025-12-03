@@ -161,6 +161,7 @@
   "pestDetection.subtitle": "കീടത്തിന്റെ ചിത്രം അപ്ലോഡ് ചെയ്ത് AI ഉപയോഗിച്ചുള്ള വിശകലനം നേടുക.",
   "selectFileFirst": "ദയവായി ആദ്യം ഫയൽ തിരഞ്ഞെടുക്കുക",
 
+  
 
   "filters.title": "ഫിൽטער്",
   "filters.sellers": "വിൽപ്പനക്കാർ",
@@ -284,7 +285,114 @@
   "operationsTitle": "പ്രവർത്തനങ്ങൾ",
   "weatherPrecautionsTitle": "കാലാവസ്ഥാ മുൻകരുതലുകൾ",
   "keyTakeawaysTitle": "മുഖ്യ കാര്യങ്ങൾ",
-  "noData": "എന്തും ലഭ്യമല്ല"
+  "noData": "എന്തും ലഭ്യമല്ല",
+
+  
+  "activityDashboard": "പ്രവർത്തന ഡാഷ്ബോർഡ്",
+  "recentOperations": "സമീപകാല ഫീൽഡ് പ്രവർത്തനങ്ങളും ലോഗുകളും",
+  "totalActivities": "ആകെ പ്രവർത്തനങ്ങൾ",
+  "refresh": "പുനഃലോഡ്",
+  "searchPlaceholder": "കുറിപ്പിലും തരംവുമനുസരിച്ച് തിരയുക...",
+  "allTypes": "എല്ലാ തരം",
+  "loadingActivities": "പ്രവർത്തനങ്ങൾ ലോഡ് ചെയ്യുന്നു...",
+  "noActivities": "പ്രവൃത്തികൾ രേഖപ്പെടുത്തിയിട്ടില്ല.",
+  "failedLoadActivities": "പ്രവർത്തനങ്ങൾ ലോഡ് ചെയ്യാൻ പരാജയപ്പെട്ടു.",
+
+  "uniqueTypes": "വ്യത്യസ്ത തരം",
+  "topActivity": "മാത്ത്യപ്രവർത്തനം",
+  "mostRecent": "സമീപകാലം",
+
+  "aiSuggestionsTitle": "AI — ശുപാർശകൾ",
+  "aiSuggestionsSubtitle": "സമീപകാല/ആവർത്തിയുള്ള പ്രവർത്തനങ്ങളുടെ അടിസ്ഥാനത്തിൽ ശുപാർശകൾ ലഭിക്കുക (AI സഹായത്തോടെ).",
+  "topActivityTypesLabel": "പ്രധാന പ്രവർത്തന തരം",
+  "generateSuggestions": "ശുപാർശകൾ സൃഷ്ടിക്കുക",
+  "generating": "സൃഷ്ടിക്കുന്നു...",
+  "clear": "വിസർജ്ജിക്കുക",
+
+  "suggestions": "ശുപാർശകൾ",
+  "suggestionsSubtitle": "നിങ്ങളുടെ പ്രധാന പ്രവർത്തനങ്ങളുടെ അടിസ്ഥാനത്തിൽ AI ശുപാർശകൾ.",
+  "aiThinking": "AI ചിന്തിക്കുന്നു…",
+  "noSuggestionsPrompt": "ഇപ്പോൾ ശുപാർശകൾ ഇല്ല. \"ശുപാർശകൾ സൃഷ്ടിക്കുക\" ക്ലിക്ക് ചെയ്യുക.",
+  "noSuggestionsTitle": "ശുപാർശകൾ ഇല്ല",
+  "noSuggestionsDetail": "AI ശൂന്യമായ മറുപടി നൽകിയിരിക്കുന്നു.",
+  "aiErrorTitle": "പിശക്",
+  "aiErrorDetail": "ശുപാർശകൾ സൃഷ്ടിക്കാൻ കഴിയില്ല. പിന്നീട് ശ്രമിക്കുക.",
+  "aiErrorToast": "AI ശുപാർശകൾ നിർമ്മിക്കാൻ പ്രയാസം.",
+
+  "suggestion": "ശുപാർശ",
+  "timing": "സമയക്രമം",
+  "reason": "കാരണം",
+  "lastGenerated": "അവസാനം സൃഷ്ടിച്ചത്",
+
+  "howAiWorksTitle": "AI എങ്ങനെ പ്രവർത്തിക്കുന്നു (ശുപാർശ)",
+  "howAiUsesTopAndRecent": "AI മുകളിൽ നിന്നുള്ള പ്രധാന പ്രവർത്തനങ്ങളും അടുത്തിടെ രേഖപ്പെടുത്തിയ കുറിപ്പുകളും ഉപയോഗിച്ച് പ്രവർത്തനങ്ങൾ നിർദ്ദേശിക്കുന്നു (സമയവും അളവും പരിശോധനകൾ).",
+  "howAiFlagsAnomalies": "അപ്രതീക്ഷിത വിഷയങ്ങൾ (കീടങ്ങളുടെ പിക്കുകൾ) കണ്ടെത്തി പരിശോധനകൾ നിർദ്ദേശിക്കാമെന്ന് സൂചിപ്പിക്കാം.",
+  "howAiAdvisoryNote": "ശുപാർശകൾ ഉപദേശം മാത്രമാണ — പ്രായോഗികമായി ഉറപ്പാക്കി മാത്രമേ പ്രയോഗം ചെയ്യൂ.",
+
+  "fieldNA": "കൃഷിയിലെ പേര്: ലഭ്യമല്ല",
+  "loggedBy": "രേഖപ്പെടുത്തിയത്",
+
+  "type_irrigation": "ജലസേചനം",
+  "type_fertilization": "വളപ്രയോഗം",
+  "type_pesticide_application": "കീടനാശക പ്രയോഗം",
+  "type_harvesting": "വിളവെടുപ്പ്",
+  "type_sowing": "വിത്ത് വിതയ്ക്കൽ",
+  "type_spraying": "തുളയ്ക്കൽ",
+  "type_pest": "കീട പ്രശ്നം",
+  "type_Weatherimpact": "കാലാവസ്ഥാ സ്വാധീനം",
+  "type_Weeding": "ചോറെടുക്കൽ",
+  "type_other": "മറ്റ്",
+
+  
+  "toolsServicesTitle": "ഉപകരണങ്ങളും സേവനങ്ങളും",
+  "toolsServicesSubtitle": "നിങ്ങളുടെ കൃഷി തീരുമാനങ്ങളെ പിന്തുണയ്ക്കുന്ന വിവിധ ഉപകരണങ്ങൾ അന്വേഷിക്കുക.",
+  "viewAllTools": "എല്ലാ ഉപകരണങ്ങളും കാണുക",
+
+  "feature_detectCropDisease_title": "വളത്തിന്റെ രോഗം കണ്ടെത്തൽ",
+  "feature_detectCropDisease_text": "വള ചിത്രങ്ങൾ അപ്‌ലോഡ് ചെയ്ത് നേരുള്ള പരിശോധന നേടുക.",
+
+  "feature_pestDetection_title": "കീടങ്ങളുടെ തിരിച്ചറിവ്",
+  "feature_pestDetection_text": "വള ചിത്രങ്ങളിൽ നിന്ന് ഹാനികരമായ കീടങ്ങളെ തിരിച്ചറിയുക.",
+
+  "feature_marketTrends_title": "ചന്ത പ്രവണതകൾ",
+  "feature_marketTrends_text": "വസ്തുക്കളുടെ വിലകളും പ്രവണതകളും കാണുക.",
+
+  "feature_nearestMarketplace_title": "സന്നിഹിത മാർക്കറ്റ് പ്ലേസ്",
+  "feature_nearestMarketplace_text": "നിങ്ങളുടെ സമീപത്തെ വാങ്ങുന്നവരും വിൽപ്പനക്കാരും കണ്ടെത്തുക.",
+
+  "feature_soilScanner_title": "മണ്ണിന്റെ ആരോഗ്യ സ്കാനർ",
+  "feature_soilScanner_text": "AI ഉപയോഗിച്ച് മണ്ണിലുള്ള പോഷകങ്ങളിലുണ്ടായ അവസ്ഥ വിശകലനം ചെയ്യുക.",
+
+  "feature_fertilizerGuidance_title": "വള നിർദ്ദേശങ്ങൾ",
+  "feature_fertilizerGuidance_text": "സ്മാർട്ട് വള നിർദ്ദേശങ്ങൾ ലഭിക്കുക.",
+
+  "feature_smartCropCalendar_title": "സ്മാർട്ട് വിള കാലാവധി",
+  "feature_smartCropCalendar_text": "വിത്ത് വിതയ്ക്കൽ և വിളവെടുപ്പ് സമയങ്ങൾ പദ്ധതിയിടുക.",
+
+  "feature_nearbyServices_title": "സന്നിഹിത കൃഷി സേവനങ്ങൾ",
+  "feature_nearbyServices_text": "ഷോപുകൾ, ലാബുകൾ, വാടക ഉപകരണങ്ങൾ എന്നിവ കണ്ടെത്തുക.",
+
+  "cropCalendarTitle": "വിള കലണ്ടർ",
+  "cropCalendarSubtitle": "നിങ്ങളുടെ പൂർണ്ണ കൃഷി പ്രവർത്തന ക്രമീകരണം",
+  "noEventsScheduled": "ഇപ്പോൾ യാതൊരു പ്രവർത്തനവും ഷെഡ്യൂൾ ചെയ്തിട്ടില്ല",
+  "today": "ഇന്ന്",
+  "tomorrow": "നാളെ",
+  "couldNotUpdateTask": "ടാസ്‌ക്ക് അപ്‌ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല.",
+  "plotLabel": "പ്ലോട്ട്",
+
+  "footerDescription": "സ്ഥിരതയുള്ള കൃഷിക്കും മികച്ച വിളവിനും വിവരാധിഷ്ഠിത തീരുമാനങ്ങൾക്കും കെറളാ കർഷകരെ AI ഉപയോഗിച്ച് ശക്തിപ്പെടുത്തുന്നു.",
+  "locationKerala": "കേരളം, ഇന്ത്യ",
+  "quickLinks": "ത്വരിത ലിങ്കുകൾ",
+  "cropCalendar": "വിള കലണ്ടർ",
+  "weatherAlerts": "കാലാവസ്ഥ മുന്നറിയിപ്പുകൾ",
+  "marketUpdates": "ചന്ത അപ്‌ഡേറ്റുകൾ",
+  "contact": "ബന്ധപ്പെടുക",
+  "privacy": "സ്വകാര്യതാ നയം",
+  "terms": "നിയമങ്ങളും വ്യവസ്ഥകളും",
+  "about": "ഞങ്ങളേക്കുറിച്ച്",
+  "allRightsReserved": "എല്ലാ അവകാശങ്ങളും സംരക്ഷിച്ചിരിക്കുന്നു."
+
+
 
   
 

@@ -11,6 +11,7 @@ import {
   ShoppingCart,
   UserRound,
   Sprout,
+  PlusCircle,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 
@@ -87,6 +88,19 @@ const FEATURES = (t) => [
     titleKey: "features.updateProfile.title",
     textKey: "features.updateProfile.text",
   },
+  // New entries added here
+  {
+    to: "/farms",
+    icon: <MapPin className="h-8 w-8 text-blue-400" />,
+    title: "Show All Farms",
+    text: "View a list and map of all registered farms.",
+  },
+  {
+    to: "/farms/add",
+    icon: <PlusCircle className="h-8 w-8 text-green-400" />,
+    title: "Add New Farm",
+    text: "Register a new farm with location and details.",
+  },
 ];
 
 const ViewTools = () => {
@@ -96,6 +110,8 @@ const ViewTools = () => {
 
   const { t } = useLanguage();
   const features = FEATURES(t);
+
+
 
   return (
     <section className="w-full bg-emerald-950 text-white py-10 shadow-sm border border-emerald-900">

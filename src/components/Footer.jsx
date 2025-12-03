@@ -8,6 +8,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           {/* Logo & Description */}
@@ -20,21 +21,20 @@ const Footer = () => {
             </div>
 
             <p className="text-gray-300 mb-4 max-w-md">
-              Empowering Kerala farmers with AI-driven insights for sustainable agriculture,
-              better yields, and informed decision-making.
+              {t("footerDescription")}
             </p>
 
             <div className="flex space-x-4">
               <div className="flex items-center space-x-2 text-gray-300">
                 <MapPin className="h-4 w-4" />
-                <span className="text-sm">Kerala, India</span>
+                <span className="text-sm">{t("locationKerala")}</span>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4">{t("quickLinks")}</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#" className="text-gray-300 hover:text-green-400 transition-colors">
@@ -43,17 +43,17 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-green-400 transition-colors">
-                  Crop Calendar
+                  {t("cropCalendar")}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-green-400 transition-colors">
-                  Weather Alerts
+                  {t("weatherAlerts")}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-green-400 transition-colors">
-                  Market Updates
+                  {t("marketUpdates")}
                 </a>
               </li>
             </ul>
@@ -73,12 +73,13 @@ const Footer = () => {
               </li>
             </ul>
           </div>
+
         </div>
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2025 KeralaFarm AI. All rights reserved.
+            © 2025 KeralaFarm AI. {t("allRightsReserved")}
           </p>
 
           <div className="flex space-x-6 mt-4 md:mt-0">
@@ -90,6 +91,7 @@ const Footer = () => {
             </a>
           </div>
         </div>
+
       </div>
     </footer>
   );

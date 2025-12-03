@@ -297,7 +297,116 @@
   "operationsTitle": "Operations",
   "weatherPrecautionsTitle": "Weather Precautions",
   "keyTakeawaysTitle": "Key Takeaways",
-  "noData": "No data available"
+  "noData": "No data available",
+
+  
+  "activityDashboard": "Activity Dashboard",
+  "recentOperations": "Recent field operations and logs",
+  "totalActivities": "Total activities",
+  "refresh": "Refresh",
+  "searchPlaceholder": "Search by note or type...",
+  "allTypes": "All types",
+  "loadingActivities": "Loading activities...",
+  "noActivities": "No activities recorded.",
+  "failedLoadActivities": "Failed to load activities.",
+
+  "uniqueTypes": "Unique Types",
+  "topActivity": "Top Activity",
+  "mostRecent": "Most Recent",
+
+  "aiSuggestionsTitle": "AI — Suggestions",
+  "aiSuggestionsSubtitle": "Get recommended actions based on recent/top activities (powered by AI).",
+  "topActivityTypesLabel": "Top activity types",
+  "generateSuggestions": "Generate Suggestions",
+  "generating": "Generating...",
+  "clear": "Clear",
+
+  "suggestions": "Suggestions",
+  "suggestionsSubtitle": "AI recommendations based on your top activities.",
+  "aiThinking": "AI is thinking…",
+  "noSuggestionsPrompt": "No suggestions yet. Click \"Generate Suggestions\".",
+  "noSuggestionsTitle": "No suggestions",
+  "noSuggestionsDetail": "AI returned an empty response.",
+  "aiErrorTitle": "Error",
+  "aiErrorDetail": "Failed to generate suggestions. Try again later.",
+  "aiErrorToast": "Failed to generate AI suggestions.",
+
+  "suggestion": "Suggestion",
+  "timing": "Timing",
+  "reason": "Reason",
+  "lastGenerated": "Last generated",
+
+  "howAiWorksTitle": "How AI works (suggested)",
+  "howAiUsesTopAndRecent": "AI uses top activities and recent notes to propose actions (timing, doses, checks).",
+  "howAiFlagsAnomalies": "It can also flag anomalies (sudden pest spike) and suggest inspections.",
+  "howAiAdvisoryNote": "Suggestions are advisory — always confirm locally before applying.",
+
+  "fieldNA": "Field: N/A",
+  "loggedBy": "Logged by",
+
+  "type_irrigation": "Irrigation",
+  "type_fertilization": "Fertilization",
+  "type_pesticide_application": "Pesticide",
+  "type_harvesting": "Harvesting",
+  "type_sowing": "Sowing",
+  "type_spraying": "Spraying",
+  "type_pest": "Pest Issue",
+  "type_Weatherimpact": "Weather Impact",
+  "type_Weeding": "Weeding",
+  "type_other": "Other",
+  
+  "toolsServicesTitle": "TOOLS & SERVICES",
+  "toolsServicesSubtitle": "Explore different tools to support your farming decisions.",
+  "viewAllTools": "View All Tools",
+
+  "feature_detectCropDisease_title": "Detect Crop Disease",
+  "feature_detectCropDisease_text": "Upload crop images and get instant diagnosis.",
+
+  "feature_pestDetection_title": "Pest Detection",
+  "feature_pestDetection_text": "Identify harmful pests from crop images.",
+
+  "feature_marketTrends_title": "Market Trends",
+  "feature_marketTrends_text": "View commodity prices and trends.",
+
+  "feature_nearestMarketplace_title": "Nearest Marketplace",
+  "feature_nearestMarketplace_text": "Find buyers and sellers near you.",
+
+  "feature_soilScanner_title": "Soil Health Scanner",
+  "feature_soilScanner_text": "Analyze soil nutrients using AI.",
+
+  "feature_fertilizerGuidance_title": "Fertilizer Guidance",
+  "feature_fertilizerGuidance_text": "Get smart fertilizer recommendations.",
+
+  "feature_smartCropCalendar_title": "Smart Crop Calendar",
+  "feature_smartCropCalendar_text": "Plan sowing and harvesting schedules.",
+
+  "feature_nearbyServices_title": "Nearby Agri Services",
+  "feature_nearbyServices_text": "Locate shops, labs and rentals.",
+
+  "cropCalendarTitle": "Crop Calendar",
+  "cropCalendarSubtitle": "Complete farm schedule",
+  "noEventsScheduled": "No events scheduled",
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "couldNotUpdateTask": "Could not update task.",
+  "plotLabel": "Plot",
+
+  
+  "footerDescription": "Empowering Kerala farmers with AI-driven insights for sustainable agriculture, better yields, and informed decision-making.",
+  "locationKerala": "Kerala, India",
+  "quickLinks": "Quick Links",
+  "cropCalendar": "Crop Calendar",
+  "weatherAlerts": "Weather Alerts",
+  "marketUpdates": "Market Updates",
+  "contact": "Contact",
+  "privacy": "Privacy Policy",
+  "terms": "Terms & Conditions",
+  "about": "About Us",
+  "allRightsReserved": "All rights reserved."
+
+
+
+
 
   
 
