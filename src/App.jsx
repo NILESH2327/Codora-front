@@ -48,6 +48,7 @@ import UpdateScheme from './components/UpdateScheme';
 import { ModifyOrdersPage } from './pages/ModifyOrders';
 import ViewTools from './pages/ViewTools';
 import Chatbot from './pages/KnowledgeEngine';
+import AddCropEvent from './pages/AddCropEvent';
 
 function App() {
   const [isLogged, setIsLogged] = useState(false);
@@ -137,6 +138,7 @@ function App() {
 
 
                 <Route path="/pestisides-scanner" element={<PesticideRestrictionChecker />} />
+                <Route path='/add-crop-event' element={<AddCropEvent/>}/>
 
 
 

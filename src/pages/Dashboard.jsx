@@ -46,16 +46,16 @@ const Dashboard = () => {
   };
 
   // AI Crop Tips
-  const getTips = async () => {
-    try {
-      const tips = await postJSON("/advisory/generate-advisory", {});
-      setCropTips(tips?.advisories || []);
-    } catch (err) {
-      console.error("AI Tips error:", err);
-    }
-  };
+  // const getTips = async () => {
+  //   try {
+  //     const tips = await postJSON("/advisory/generate-advisory", {});
+  //     setCropTips(tips?.advisories || []);
+  //   } catch (err) {
+  //     console.error("AI Tips error:", err);
+  //   }
+  // };
 
-  // Weather Fetch
+  // Weather Fetsch
   const loadWeather = async () => {
     try {
       const key = import.meta.env.VITE_WEATHER_API_KEY;
@@ -89,7 +89,7 @@ const Dashboard = () => {
       return;
     }
 
-    getTips();
+    // getTips();
     fetchData();
     loadWeather();
   }, []);
