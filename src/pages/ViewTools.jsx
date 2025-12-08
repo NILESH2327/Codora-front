@@ -18,7 +18,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 
 const FEATURES = (t) => [
   {
-    to: "/upload",
+    to: "/mediator",
     icon: <Microscope className="h-8 w-8 text-emerald-300" />,
     titleKey: "features.detectCrop.title",
     textKey: "features.detectCrop.text",

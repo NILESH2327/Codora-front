@@ -8,25 +8,23 @@ import {
   Loader,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
-import { postJSON } from "../api";
 import { isAuthenticated } from "../lib/actions/authActions";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Upload = () => {
+  const navigate = useNavigate();
+  const { t } = useLanguage();
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
-
-  const navigate = useNavigate();
-  const { t } = useLanguage();
 
   useEffect(() => {
     if (!isAuthenticated()) {
       toast.error(t("pleaseLoginFirst"));
       navigate("/login");
     }
-    // include navigate and t to silence lint and keep behaviour stable
   }, [navigate, t]);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -36,7 +34,6 @@ const Upload = () => {
 
   const fileInputRef = useRef(null);
 
-  // Select file
   const handleFileSelect = (file) => {
     setSelectedFile(file);
     setAnalysisResult(null);
@@ -59,13 +56,12 @@ const Upload = () => {
     }
   };
 
-  // Real backend analysis (GitHub version)
+  // 🔥 SEND IMAGE TO BACKEND
   const analyzeImage = async () => {
     if (!selectedFile) return;
 
-    // optional: size check (10 MB)
     if (selectedFile.size > 10 * 1024 * 1024) {
-      toast.error(t("fileTooLarge"));
+      toast.error("File too large");
       return;
     }
 
@@ -76,10 +72,15 @@ const Upload = () => {
       const formData = new FormData();
       formData.append("image", selectedFile);
 
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        `http://localhost:5000/api/advisory/detect-crop-disease`,
+        "http://localhost:5000/api/advisory/detect-crop-disease",
         {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           body: formData,
         }
       );
@@ -87,14 +88,20 @@ const Upload = () => {
       if (!response.ok) throw new Error("Failed to analyze image");
 
       const result = await response.json();
+      console.log("Analysis:", result);
       setAnalysisResult(result);
     } catch (err) {
       setAnalysisResult({
-        disease: t("networkError"),
+        disease: "Network error",
         confidence: 0,
-        severity: t("unknown"),
+        severity: "Unknown",
+        stage: "Unknown",
         treatment: [],
-        prevention: [t("analysisNetworkError") + ": " + err.message],
+        prevention: [],
+        Fertilizers: [],
+        Quantity: "",
+        quantityPerUnit: "",
+        totalQuantity: "",
       });
     } finally {
       setIsAnalyzing(false);
@@ -102,120 +109,76 @@ const Upload = () => {
   };
 
   return (
- <div
-  className="min-h-screen bg-cover bg-center bg-no-repeat py-8 relative"
-  style={{
-    backgroundImage:
-      "url('https://cdn.pixabay.com/photo/2021/09/18/02/27/vietnam-6634082_1280.jpg')",
-  }}
->
-  {/* Soft overlay for readability */}
-  <div className="absolute inset-0 bg-white/50 backdrop-blur-[3px]"></div>
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat py-8 relative"
+      style={{
+        backgroundImage:
+          "url('https://cdn.pixabay.com/photo/2021/09/18/02/27/vietnam-6634082_1280.jpg')",
+      }}
+    >
+      <div className="absolute inset-0 bg-white/50 backdrop-blur-[3px]"></div>
 
-  {/* Page content wrapper */}
-  <div className="relative z-10">      
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            {t("cropDetection.title")}
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {t("cropDetection.subtitle")}
-          </p>
-        </div>
+      <div className="relative z-10">
+        <div className="max-w-4xl mx-auto px-4">
 
-        {/* grid with items-stretch keeps both cards same height */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-          {/* Upload Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col min-h-[420px]">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              {t("uploadImage.title")}
-            </h2>
+          {/* PAGE HEADING */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">{t("cropDetection.title")}</h1>
+            <p className="text-xl text-gray-600">{t("cropDetection.subtitle")}</p>
+          </div>
 
-            {/* Keep the content area flexible so footer (filename + button) stays at bottom */}
-            {!previewUrl ? (
-              <div
-                onDrop={handleDrop}
-                onDragOver={(e) => e.preventDefault()}
-                className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors cursor-pointer flex-1 flex flex-col justify-center"
-                onClick={() => fileInputRef.current?.click()}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
-                }}
-              >
-                <UploadIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                <p className="text-lg font-medium text-gray-700 mb-2">
-                  {t("uploadArea.dropOrClick")}
-                </p>
+            {/* UPLOAD CARD */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold mb-4">{t("uploadImage.title")}</h2>
 
-                <p className="text-sm text-gray-500 mb-4">
-                  {t("uploadArea.supports")}
-                </p>
+              {!previewUrl ? (
+                <div
+                  onDrop={handleDrop}
+                  onDragOver={(e) => e.preventDefault()}
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-green-400"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <UploadIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-lg font-medium text-gray-700">{t("uploadArea.dropOrClick")}</p>
+                  <p className="text-sm text-gray-500">{t("uploadArea.supports")}</p>
 
-                <div className="flex justify-center space-x-4">
-                  <button
-                    type="button"
-                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                  >
-                    <Camera className="h-4 w-4" />
-                    <span>{t("uploadButtons.takePhoto")}</span>
-                  </button>
+                  <div className="mt-4 flex justify-center space-x-4">
+                    <button className="px-4 py-2 bg-green-600 text-white rounded-lg flex items-center space-x-2">
+                      <Camera className="h-4 w-4" />
+                      <span>{t("uploadButtons.takePhoto")}</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                  >
-                    <FileImage className="h-4 w-4" />
-                    <span>{t("uploadButtons.chooseFile")}</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex-1 flex flex-col justify-between space-y-4">
-                <div className="relative w-full rounded-lg overflow-hidden bg-gray-100">
-                  {/* fixed preview height for stability */}
-                  <div className="w-full h-64 sm:h-80 flex items-center justify-center bg-gray-50">
-                    <img
-                      src={previewUrl}
-                      alt="crop"
-                      className="max-h-full max-w-full object-contain"
-                    />
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-4 py-2 border rounded-lg flex items-center space-x-2"
+                    >
+                      <FileImage className="h-4 w-4" />
+                      <span>{t("uploadButtons.chooseFile")}</span>
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => {
-                      setPreviewUrl(null);
-                      setSelectedFile(null);
-                      setAnalysisResult(null);
-                    }}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
-                    aria-label={t("closePreview")}
-                  >
-                    ×
-                  </button>
                 </div>
-
-                {/* Footer area with file info + analyze button - consistent space reserved */}
-                <div className="flex items-center justify-between mt-2">
-                  <div className="min-w-0">
-                    {/* truncate long filenames */}
-                    <p className="font-medium text-gray-900 truncate">
-                      {selectedFile?.name}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {(selectedFile?.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
+              ) : (
+                <div className="flex flex-col space-y-4">
+                  <div className="relative w-full rounded-lg overflow-hidden bg-gray-100">
+                    <img src={previewUrl} className="w-full max-h-80 object-contain" alt="preview" />
+                    <button
+                      onClick={() => {
+                        setPreviewUrl(null);
+                        setSelectedFile(null);
+                        setAnalysisResult(null);
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full"
+                    >
+                      ×
+                    </button>
                   </div>
 
                   <button
                     onClick={analyzeImage}
                     disabled={isAnalyzing}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center space-x-2 ml-4"
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg flex items-center justify-center space-x-2 disabled:opacity-50"
                   >
                     {isAnalyzing ? (
                       <>
@@ -230,110 +193,187 @@ const Upload = () => {
                     )}
                   </button>
                 </div>
-              </div>
-            )}
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileInputChange}
-            />
-          </div>
-
-          {/* Results Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col min-h-[420px]">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              {t("analysisResults.title")}
-            </h2>
-
-            {/* make results area scrollable if content grows */}
-            <div className="flex-1 overflow-auto">
-              {!analysisResult && !isAnalyzing && (
-                <div className="text-center py-12">
-                  <FileImage className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">{t("analysisResults.empty")}</p>
-                </div>
               )}
 
-              {isAnalyzing && (
-                <div className="text-center py-12">
-                  <Loader className="h-16 w-16 text-green-600 mx-auto animate-spin mb-4" />
-                  <p className="text-gray-600">{t("analysisProgress")}</p>
-                  <p className="text-sm text-gray-500 mt-2">{t("analysisProgressNote")}</p>
-                </div>
-              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileInputChange}
+              />
+            </div>
 
-              {analysisResult && (
-                <div className="space-y-6">
-                  {/* Disease */}
-                  <div className="border border-orange-200 bg-orange-50 p-4 rounded-lg">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <AlertCircle className="h-5 w-5 text-orange-600" />
-                      <h3 className="font-semibold text-orange-900">
-                        {t("analysisResults.diseaseDetected")}
-                      </h3>
+            {/* RESULTS CARD */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold mb-4">{t("analysisResults.title")}</h2>
+
+              <div className="max-h-[70vh] overflow-auto">
+
+                {!analysisResult && !isAnalyzing && (
+                  <div className="text-center py-12">
+                    <FileImage className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">{t("analysisResults.empty")}</p>
+                  </div>
+                )}
+
+                {isAnalyzing && (
+                  <div className="text-center py-12">
+                    <Loader className="h-16 w-16 text-green-600 animate-spin mx-auto mb-4" />
+                    <p className="text-gray-600">{t("analysisProgress")}</p>
+                  </div>
+                )}
+
+                {analysisResult && (
+                  <div className="space-y-6">
+
+                    {/* --- DISEASE CARD --- */}
+                    <div className="border border-orange-200 bg-orange-50 p-5 rounded-xl shadow-sm">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="text-sm font-semibold text-orange-900">
+                            {t("analysisResults.diseaseDetected")}
+                          </h3>
+
+                          <p className="text-xl font-bold text-orange-900 mt-1">
+                            {analysisResult.disease}
+                          </p>
+
+                          <p className="text-orange-700 text-sm mt-1">
+                            Confidence: {analysisResult.confidence}% | Severity: {analysisResult.severity}
+                          </p>
+
+                          {/* NEW: DISEASE STAGE */}
+                          <p className="text-blue-700 text-sm font-medium mt-1">
+                            Stage: {analysisResult.stage || "Unknown"}
+                          </p>
+
+                          {/* Confidence bar */}
+                          <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              style={{ width: `${analysisResult.confidence}%` }}
+                              className="h-2 bg-green-500 rounded-full"
+                            ></div>
+                          </div>
+
+                          {/* Per-acre dose */}
+                          {analysisResult.quantityPerUnit &&
+                            analysisResult.quantityPerUnit.trim() !== "" && (
+                              <>
+                                <p className="mt-4 text-sm font-semibold text-gray-700">
+                                  Dose (per acre):
+                                </p>
+                                <p className="text-sm text-gray-800">
+                                  {analysisResult.quantityPerUnit}
+                                </p>
+
+                                {analysisResult._personalization?.usedFallback && (
+                                  <div className="mt-2 text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 inline-block">
+                                    Estimated fallback dose used
+                                  </div>
+                                )}
+                              </>
+                            )}
+
+                          {/* Quantity Description */}
+                          {analysisResult.Quantity && (
+                            <p className="mt-3 text-xs text-gray-700">
+                              <strong>Details:</strong> {analysisResult.Quantity}
+                            </p>
+                          )}
+
+                          {/* Note */}
+                          {analysisResult.note && (
+                            <p className="mt-2 text-xs italic text-gray-500">{analysisResult.note}</p>
+                          )}
+                        </div>
+
+                        {/* Total Quantity */}
+                        {analysisResult.totalQuantity &&
+                          analysisResult.totalQuantity.trim() !== "" && (
+                            <div className="text-right">
+                              <div className="bg-white border border-orange-100 px-3 py-2 rounded-full shadow">
+                                <p className="text-xs text-gray-500">Total for your land</p>
+                                <p className="font-bold text-sm">
+                                  {analysisResult.totalQuantity}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                      </div>
                     </div>
 
-                    <p className="text-lg font-bold text-orange-900">{analysisResult.disease}</p>
+                    {/* TREATMENT */}
+                    <div className="bg-white border rounded-xl p-5 shadow-sm">
+                      <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        {t("analysisResults.treatmentRecommendations")}
+                      </h3>
 
-                    <p className="text-sm text-orange-700">
-                      {t("analysisResults.confidence")}: {analysisResult.confidence}% |{" "}
-                      {t("analysisResults.severity")}: {analysisResult.severity}
-                    </p>
-                  </div>
-
-                  {/* Treatment */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                      {t("analysisResults.treatmentRecommendations")}
-                    </h3>
-
-                    <ul className="space-y-2">
                       {analysisResult.treatment?.length ? (
-                        analysisResult.treatment.map((step, idx) => (
-                          <li key={idx} className="flex items-start space-x-2">
-                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-0.5">
-                              {idx + 1}
-                            </span>
-                            <span className="text-gray-700 text-sm">{step}</span>
-                          </li>
-                        ))
+                        <ul className="space-y-2">
+                          {analysisResult.treatment.map((step, idx) => (
+                            <li key={idx} className="flex items-start gap-3">
+                              <div className="w-6 h-6 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-xs font-bold">
+                                {idx + 1}
+                              </div>
+                              <p className="text-sm text-gray-700">{step}</p>
+                            </li>
+                          ))}
+                        </ul>
                       ) : (
-                        <li className="text-sm text-gray-600">{t("analysisResults.noTreatment")}</li>
+                        <p className="text-sm text-gray-500">No treatment available.</p>
                       )}
-                    </ul>
-                  </div>
+                    </div>
 
-                  {/* Prevention */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">
-                      {t("analysisResults.preventionTips")}
-                    </h3>
+                    {/* PREVENTION */}
+                    <div className="bg-white border rounded-xl p-5 shadow-sm">
+                      <h3 className="font-semibold text-gray-900 mb-3">
+                        {t("analysisResults.preventionTips")}
+                      </h3>
 
-                    <ul className="space-y-2">
                       {analysisResult.prevention?.length ? (
-                        analysisResult.prevention.map((tip, idx) => (
-                          <li key={idx} className="flex items-start space-x-2">
-                            <span className="w-2 h-2 bg-blue-400 rounded-full mt-2"></span>
-                            <span className="text-gray-700 text-sm">{tip}</span>
-                          </li>
-                        ))
+                        <ul className="space-y-2">
+                          {analysisResult.prevention.map((tip, idx) => (
+                            <li key={idx} className="flex gap-3">
+                              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2" />
+                              <p className="text-sm text-gray-700">{tip}</p>
+                            </li>
+                          ))}
+                        </ul>
                       ) : (
-                        <li className="text-sm text-gray-600">{t("analysisResults.noPrevention")}</li>
+                        <p className="text-sm text-gray-500">No prevention available.</p>
                       )}
-                    </ul>
+                    </div>
+
+                    {/* FERTILIZERS */}
+                    <div className="bg-white border rounded-xl p-5 shadow-sm">
+                      <h3 className="font-semibold text-gray-900 mb-3">Recommended Fertilizers</h3>
+
+                      {analysisResult.Fertilizers?.length ? (
+                        <ul className="space-y-2">
+                          {analysisResult.Fertilizers.map((f, idx) => (
+                            <li key={idx} className="flex gap-3">
+                              <div className="w-2 h-2 bg-purple-500 rounded-full mt-2" />
+                              <p className="text-sm text-gray-700">{f}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-gray-500">No fertilizer recommendations.</p>
+                      )}
+                    </div>
+
                   </div>
-                </div>
-              )}
+                )}
+
+              </div>
             </div>
+
           </div>
         </div>
       </div>
     </div>
-  </div>
   );
 };
 

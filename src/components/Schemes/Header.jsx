@@ -34,7 +34,7 @@ const SchemeHeader = ({ onOpenSchemes }) => {
 
           {/* Right Button */}
           <Link
-            to={'add'}
+            to={'/SchemesEligible'}
             onClick={onOpenSchemes}
             className="
               flex items-center gap-2 

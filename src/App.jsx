@@ -53,6 +53,8 @@ import { ModifyOrdersPage } from './pages/ModifyOrders';
 import ViewTools from './pages/ViewTools';
 import Chatbot from './pages/KnowledgeEngine';
 import AddCropEvent from './pages/AddCropEvent';
+import MediatorPage from './pages/MediatorPage';
+import UploadModel from './pages/UploadModel';
 
 function App() {
   const [isLogged, setIsLogged] = useState(false);
@@ -79,6 +81,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/upload" element={<Upload />} />
+                <Route path="/uploadmodel" element={<UploadModel />} />
                 {/* <Route path="/chatbot" element={<Chatbot />} /> */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -86,6 +89,7 @@ function App() {
                 <Route path="/update-profile" element={<UpdateProfileForm />} />
                 <Route path="/knowledge-engine" element={<Knowledge />} />
                 <Route path="/tools" element={<ViewTools />} />
+                <Route path="/mediator" element={<MediatorPage />} />
 
                 {/* PLOTS */}
                 <Route path="/farms" element={<AllPlots />} />
