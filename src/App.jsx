@@ -40,6 +40,7 @@ import CommodityMarketplace from './pages/MarketPlace';
 import RequirementDetails from './pages/Requirements';
 import Schemes from './pages/Schemes';
 import SellBuyForm from './pages/SellBuyForm';
+import SchemeEligible from './pages/schemesEligible';
 import SchemeForm from './pages/AddScheme';
 import SchemeDetailPage from './pages/SchemePage';
 import AdminDashboard from './pages/AdminDashboard';
@@ -109,6 +110,7 @@ function App() {
 
                 {/* SCHEMES */}
                 <Route path="/schemes" element={<Schemes />} />
+                <Route path="/SchemesEligible" element={<SchemeEligible />} />
                 <Route path="/schemes/add" element={<SchemeForm />} />
                 <Route path='/schemes/:id' element={<SchemeDetailPage />} />
 

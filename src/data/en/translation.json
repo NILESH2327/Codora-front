@@ -457,8 +457,32 @@
   "saveEvent": "Save event",
   "addedSuccess": "Added successfully",
   "saveError": "Could not save event.",
-  "requiredFieldsError": "Please fill required fields: title and due date."
+  "requiredFieldsError": "Please fill required fields: title and due date.",
 
+  "farmerDetails": "Farmer Details",
+  "personalizeSubtitle": "Share a few details to personalise your experience",
+  "ageLabel": "Age",
+  "agePlaceholder": "Enter age (years)",
+  "ageInvalid": "Please enter a valid age",
+  "ageMin": "Age must be at least 15",
+  "ageUnrealistic": "Age looks unrealistic",
+  "casteLabel": "Caste / Category",
+  "selectPlaceholder": "-- Select --",
+  "general": "General",
+  "obc": "OBC",
+  "sc": "SC",
+  "st": "ST",
+  "other": "Other",
+  "otherCastePlaceholder": "Please specify caste/category",
+  "casteRequired": "Please select a caste/category",
+  "otherCasteRequired": "Please specify caste",
+  "monthlyIncomeLabel": "Monthly Income (INR)",
+  "incomePlaceholder": "Approx. monthly income in INR",
+  "incomeRequired": "Please enter monthly income",
+  "incomeNegative": "Income cannot be negative",
+  "saveDetails": "Save Details",
+  "privacyNote": "We only use this to personalise your recommendations.",
+  "detailsSaved": "Details saved successfully!"
 
 
 
