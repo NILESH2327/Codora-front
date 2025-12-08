@@ -240,7 +240,7 @@ export default function FertilizerGuidance() {
       }}
     >
       <div className="max-w-6xl w-full">
-        <h1 className="text-3xl font-semibold text-center mb-8">
+        <h1 className="text-3xl text-white font-semibold text-center mb-8">
           {t("fertilizerGuideTitle")}
         </h1>
 

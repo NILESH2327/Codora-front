@@ -120,44 +120,44 @@ const Schemes = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {schemes.map((scheme) => (
-                <Link
-                  to={`${scheme._id}`} // backend id
-                  key={scheme._id}
-                  className="bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <BadgeCheck className="text-green-600" size={18} />
-                    <h3 className="text-base md:text-lg font-semibold text-gray-900 line-clamp-2">
-                      {scheme.name}
-                    </h3>
-                  </div>
+               <Link
+  to={`${scheme._id}`}
+  key={scheme._id}
+  className="bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition flex flex-col h-full"
+>
+  <div className="flex items-center gap-2 mb-2">
+    <BadgeCheck className="text-green-600" size={18} />
+    <h3 className="text-base md:text-lg font-semibold text-gray-900 line-clamp-2">
+      {scheme.name}
+    </h3>
+  </div>
 
-                  <p className="text-xs md:text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Department:</span>{" "}
-                    {scheme.department}
-                  </p>
+  <p className="text-xs md:text-sm text-gray-600 mb-1">
+    <span className="font-semibold">Department:</span> {scheme.department}
+  </p>
 
-                  {scheme.eligibility?.state && (
-                    <p className="text-xs md:text-sm text-gray-600 mb-1">
-                      <span className="font-semibold">State:</span>{" "}
-                      {scheme.eligibility.state}
-                    </p>
-                  )}
+  {scheme.eligibility?.state && (
+    <p className="text-xs md:text-sm text-gray-600 mb-1">
+      <span className="font-semibold">State:</span> {scheme.eligibility.state}
+    </p>
+  )}
 
-                  <p className="text-xs md:text-sm text-gray-700 mb-2 line-clamp-3">
-                    {scheme.description}
-                  </p>
+  <p className="text-xs md:text-sm text-gray-700 mb-2 line-clamp-3">
+    {scheme.description}
+  </p>
 
-                  {scheme.benefits && (
-                    <p className="text-sm text-green-700 font-medium">
-                      Benefit: {scheme.benefits}
-                    </p>
-                  )}
+  {scheme.benefits && (
+    <p className="text-sm text-green-700 font-medium">
+      Benefit: {scheme.benefits}
+    </p>
+  )}
 
-                  <button className="mt-3 w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700 transition">
-                    View Details
-                  </button>
-                </Link>
+  {/* Push the button to the bottom */}
+  <button className="mt-auto w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700 transition">
+    View Details
+  </button>
+</Link>
+
               ))}
             </div>
           )}
