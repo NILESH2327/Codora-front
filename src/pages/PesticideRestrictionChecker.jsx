@@ -78,10 +78,22 @@ export default function PesticideRestrictionChecker() {
   }
 
   return (
-    <div className="min-h-screen"
+   
+     <div
+  className="min-h-screen bg-cover bg-center bg-no-repeat py-8 relative"
+  style={{
+    backgroundImage:
+      "url('https://cdn.pixabay.com/photo/2021/09/18/02/27/vietnam-6634082_1280.jpg')",
+  }}
+>
+  {/* Soft overlay for readability */}
+  <div className="absolute inset-0 bg-white/50 backdrop-blur-[3px]"></div>
+  <div className="relative max-w-4xl mx-auto px-2">
+    
+    <div className="min-h-screen" 
          style={{ backgroundImage: `url(${bgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-      <div className="backdrop-brightness-50 bg-[rgba(2,48,33,0.62)] min-h-screen p-8">
+      <div className="backdrop-brightness-50 bg-[rgba(2,48,33,0.62)] min-h-screen p-6 ">
         <div className="max-w-6xl mx-auto text-center text-white py-12">
           <h1 className="text-3xl font-extrabold">Pesticide Restriction Checker</h1>
           <p className="mt-2 text-slate-200 max-w-2xl mx-auto">
@@ -169,6 +181,8 @@ export default function PesticideRestrictionChecker() {
 
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 }

@@ -73,8 +73,8 @@ export default function SchemeDetailPage() {
 
      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-          <div className="flex items-start justify-between mb-4">
+        <div className="bg-white rounded-2xl shadow-sm p-6 border  border-gray-100">
+          <div className="flex items-start  justify-between mb-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 mb-1">{scheme.name}</h1>
               <div className="flex items-center gap-3 text-sm text-gray-600">

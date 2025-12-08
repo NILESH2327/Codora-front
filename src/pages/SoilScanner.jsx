@@ -45,7 +45,16 @@ export default function SoilScanner() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+ <div
+  className="min-h-screen bg-cover bg-center bg-no-repeat py-8 relative"
+  style={{
+    backgroundImage:
+      "url('https://cdn.pixabay.com/photo/2021/09/18/02/27/vietnam-6634082_1280.jpg')",
+  }}
+>
+  {/* Soft overlay for readability */}
+  <div className="absolute inset-0 bg-white/50 backdrop-blur-[3px]"></div>
+  <div className="relative max-w-4xl mx-auto px-4">
       <h2 className="text-3xl font-bold mb-6 text-green-600">
         Soil Health Scanner
       </h2>
@@ -128,6 +137,7 @@ export default function SoilScanner() {
           </details>
         </div>
       )}
+    </div>
     </div>
   );
 }
