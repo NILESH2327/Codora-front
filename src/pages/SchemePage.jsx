@@ -61,8 +61,17 @@ export default function SchemeDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto space-y-6">
+  <div
+    className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+    style={{
+      backgroundImage:
+        "url('https://cdn.pixabay.com/photo/2021/09/18/02/27/vietnam-6634082_1280.jpg')",
+    }}
+  >
+    {/* Blur only the background, NOT the content */}
+    {/* <div className="absolute inset-0 backdrop-blur-sm bg-white/30"></div> */}
+
+     <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
           <div className="flex items-start justify-between mb-4">
