@@ -127,12 +127,12 @@ const Sidebar = ({
 );
 
 /* ---------------- Main ---------------- */
-const CommodityMarketplace = () => {
+const BuyerMarketPlace = () => {
   const { t } = useLanguage();
 
   // filters state
   const [filters, setFilters] = useState({
-    type: 'sell', // default to buyers
+    type: 'buy', // default to buyers
     product: '',
     variety: '',
     location: '',
@@ -358,4 +358,4 @@ const CommodityMarketplace = () => {
   );
 };
 
-export default CommodityMarketplace;
+export default BuyerMarketPlace;

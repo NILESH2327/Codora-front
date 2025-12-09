@@ -55,6 +55,17 @@ import Chatbot from './pages/KnowledgeEngine';
 import AddCropEvent from './pages/AddCropEvent';
 import MediatorPage from './pages/MediatorPage';
 import UploadModel from './pages/UploadModel';
+import DetectPesticide from './pages/PesticideDetector';
+import BuyerMarketPlace from './pages/BuyerMarketPlace';
+
+import LoanMediator from './pages/LoanPage';
+import LoanRequests from './pages/LoanPage';
+import NgoProfile from './pages/NgoProfile';
+import NgoDashboard from './pages/NgoDashboard';
+import UpdateNgoProfile from './pages/UpdateNgoProfile';
+import AllLoans from './pages/AllLoans';
+import ApplyLoan from './pages/ApplyLoan';
+import FindMandi from './pages/MarketCalculator';
 
 function App() {
   const [isLogged, setIsLogged] = useState(false);
@@ -124,6 +135,7 @@ function App() {
                 <Route path="/requirements/edit/:edit" element={<SellBuyForm />} />
                 <Route path="/requirements/:id" element={<RequirementDetails />} />
                 <Route path="/market/farmer" element={<ModifyOrdersPage />} />
+                <Route path="/market/buyer" element={<BuyerMarketPlace />} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -148,6 +160,19 @@ function App() {
 
                 <Route path="/pestisides-scanner" element={<PesticideRestrictionChecker />} />
                 <Route path='/add-crop-event' element={<AddCropEvent/>}/>
+                <Route path='/detact-pesticide' element={<DetectPesticide/>}/>
+                {/* <Route path='/test' element={<FindMandi/>}/> */}
+                <Route path='/ngo/loan-requests' element={<LoanRequests/>}/>
+                <Route path='/ngo/profile' element={<NgoProfile/>}/>
+                <Route path='/ngo/profile/update' element={<UpdateNgoProfile/>}/>
+                <Route path='/ngo/dashboard' element={<NgoDashboard/>}/>
+                <Route path='/loans/all' element={<AllLoans/>}/>
+                <Route path='/loans/:id' element={<ApplyLoan />}/>
+
+                <Route path="/market-calculator" element={<FindMandi />} />
+
+
+                 
 
 
 

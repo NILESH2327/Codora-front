@@ -45,7 +45,7 @@ export const CommodityCard = ({ commodity, onFavorite }) => (
       </div>
       
       <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition-colors">
-        Call / Chat Buyer
+        Call Now
       </button>
     </div>
   </div>

@@ -36,6 +36,13 @@ const FEATURES = (t) => [
     textKey: "features.marketTrends.text",
   },
   {
+    to: "/market-calculator",
+    icon: <Sprout className="h-8 w-8 text-green-300" />,
+    titleKey: "Price Calculator",
+    textKey: "Calculate optimal prices for your crops.",
+
+  },
+  {
     to: "/market-place",
     icon: <MapPin className="h-8 w-8 text-teal-300" />,
     titleKey: "features.nearestMarketplace.title",
@@ -97,7 +104,7 @@ const FEATURES = (t) => [
     textKey: "Register a new farm with location and details.",
   },
   {
-  to: "/pestisides-scanner",
+  to: "/detact-pesticide",
   icon: <FlaskConical className="h-8 w-8 text-teal-200" />,
   titleKey: "Pesticide Restriction Checker",
   textKey: "Check pesticide restrictions for crops.",
@@ -107,6 +114,12 @@ const FEATURES = (t) => [
     icon: <Microscope className="h-8 w-8 text-green-200" />,
     titleKey: "features.soilScanner.title",
     textKey: "features.soilScanner.text",
+  },
+  {
+    to: "/loans/all",
+    icon: <PlusCircle  className="h-8 w-8 text-green-200" />,
+    titleKey: "Get Loan",
+    textKey: "Apply for agricultural loans easily.",
   },
 ];
 

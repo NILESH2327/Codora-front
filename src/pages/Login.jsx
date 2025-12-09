@@ -29,12 +29,21 @@ const Login = () => {
       const data = await postJSON("/auth/login", { phone, password, isAdmin });
 
       if (data.success) {
-        onLogin({ id: data.userId, token: data.token, isAdmin });
+        console.log("Login successful:", data);
+        const role = data.role;
+        onLogin({ id: data.userId, token: data.token, isAdmin ,role : data.role});
         toast.success(data.message);
 
         setTimeout(() => {
           if (isAdmin) {
             window.location.href = "/admin/dashboard";
+          } else if(role === 'buyer'){
+            toast.info("Redirecting to Marketplace...");
+            window.location.href = "/market/buyer";
+          }else if(role === 'loan'){
+            toast.info("Redirecting to Loan Mediator Page...");
+            window.location.href = "/ngo/profile/update";  
+      
           } else {
             window.location.href = "/dashboard";
           }
