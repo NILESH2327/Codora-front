@@ -1,57 +1,67 @@
 import React from "react";
-import { Microscope, Bug, BarChart, MapPin, CalendarDays } from "lucide-react";
+import
+ { Microscope,
+  Bug,
+  BarChart,
+  MapPin,
+  CalendarDays,
+  Store ,
+  FlaskRound ,
+  Calculator } 
+from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
 // import { useLanguage } from "../contexts/LanguageContext";
 
 const FEATURES = [
-  {
-    to: "/upload",
+{
+    to: "/mediator",
     icon: <Microscope className="h-8 w-8 text-emerald-300" />,
-    titleKey: "feature_detectCropDisease_title",
-    textKey: "feature_detectCropDisease_text",
+    titleKey: "features.detectCrop.title",
+    textKey: "features.detectCrop.text",
   },
   {
     to: "/pest-detection",
     icon: <Bug className="h-8 w-8 text-lime-300" />,
-    titleKey: "feature_pestDetection_title",
-    textKey: "feature_pestDetection_text",
+    titleKey: "features.pestDetection.title",
+    textKey: "features.pestDetection.text",
   },
   {
     to: "/market-trends",
     icon: <BarChart className="h-8 w-8 text-amber-300" />,
-    titleKey: "feature_marketTrends_title",
-    textKey: "feature_marketTrends_text",
+    titleKey: "features.marketTrends.title",
+    textKey: "features.marketTrends.text",
+  },
+  {
+    to: "/market-calculator",
+    icon: <Calculator  className="h-8 w-8 text-green-300" />,
+    titleKey: "Price Calculator",
+    textKey: "Calculate optimal prices for your crops.",
+
   },
   {
     to: "/market-place",
-    icon: <MapPin className="h-8 w-8 text-teal-300" />,
-    titleKey: "feature_nearestMarketplace_title",
-    textKey: "feature_nearestMarketplace_text",
-  },
-  {
-    to: "/soil-scanner",
-    icon: <Microscope className="h-8 w-8 text-green-200" />,
-    titleKey: "feature_soilScanner_title",
-    textKey: "feature_soilScanner_text",
+    icon: <Store  className="h-8 w-8 text-teal-300" />,
+    titleKey: "features.nearestMarketplace.title",
+    textKey: "features.nearestMarketplace.text",
   },
   {
     to: "/fertilizer-guidance",
-    icon: <Microscope className="h-8 w-8 text-emerald-200" />,
-    titleKey: "feature_fertilizerGuidance_title",
-    textKey: "feature_fertilizerGuidance_text",
+    icon: <FlaskRound  className="h-8 w-8 text-emerald-200" />,
+    titleKey: "features.fertilizerGuidance.title",
+    textKey: "features.fertilizerGuidance.text",
   },
   {
     to: "/crop-calender",
     icon: <CalendarDays className="h-8 w-8 text-lime-200" />,
-    titleKey: "feature_smartCropCalendar_title",
-    textKey: "feature_smartCropCalendar_text",
+    titleKey: "features.cropCalendar.title",
+    textKey: "features.cropCalendar.text",
   },
   {
     to: "/nearby-service",
     icon: <MapPin className="h-8 w-8 text-teal-200" />,
-    titleKey: "feature_nearbyServices_title",
-    textKey: "feature_nearbyServices_text",
+    titleKey: "features.nearbyServices.title",
+    textKey: "features.nearbyServices.text",
   },
 ];
 

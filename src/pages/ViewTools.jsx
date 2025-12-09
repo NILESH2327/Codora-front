@@ -10,9 +10,15 @@ import {
   ScrollText,
   ShoppingCart,
   UserRound,
+  Droplet ,
   Sprout,
+  Store ,
   PlusCircle,
-  FlaskConical
+  FlaskConical,
+  FlaskRound ,
+  Banknote ,
+  MapPinned ,
+  Calculator 
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 
@@ -37,20 +43,20 @@ const FEATURES = (t) => [
   },
   {
     to: "/market-calculator",
-    icon: <Sprout className="h-8 w-8 text-green-300" />,
+    icon: <Calculator  className="h-8 w-8 text-green-300" />,
     titleKey: "Price Calculator",
     textKey: "Calculate optimal prices for your crops.",
 
   },
   {
     to: "/market-place",
-    icon: <MapPin className="h-8 w-8 text-teal-300" />,
+    icon: <Store  className="h-8 w-8 text-teal-300" />,
     titleKey: "features.nearestMarketplace.title",
     textKey: "features.nearestMarketplace.text",
   },
   {
     to: "/fertilizer-guidance",
-    icon: <Microscope className="h-8 w-8 text-emerald-200" />,
+    icon: <FlaskRound  className="h-8 w-8 text-emerald-200" />,
     titleKey: "features.fertilizerGuidance.title",
     textKey: "features.fertilizerGuidance.text",
   },
@@ -93,7 +99,7 @@ const FEATURES = (t) => [
   // New entries added here
   {
     to: "/farms",
-    icon: <MapPin className="h-8 w-8 text-blue-400" />,
+    icon: <MapPinned  className="h-8 w-8 text-blue-400" />,
     titleKey: "features.showallfarms.title",
     textKey: "features.showallfarms.text",
   },
@@ -111,13 +117,14 @@ const FEATURES = (t) => [
 },
 {
     to: "/soil-scanner",
-    icon: <Microscope className="h-8 w-8 text-green-200" />,
+    icon: <  Sprout
+   className="h-8 w-8 text-green-200" />,
     titleKey: "features.soilScanner.title",
     textKey: "features.soilScanner.text",
   },
   {
     to: "/loans/all",
-    icon: <PlusCircle  className="h-8 w-8 text-green-200" />,
+    icon: <Banknote  className="h-8 w-8 text-green-200" />,
     titleKey: "Get Loan",
     textKey: "Apply for agricultural loans easily.",
   },

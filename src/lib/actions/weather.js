@@ -1,3 +1,26 @@
+
+
+export const reverseGeoLookup = async (lat, lon) => {
+  try {
+    const url = `https://api.weatherapi.com/v1/search.json?key=748c922b6b124c14ad305356252111&q=${lat},${lon}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Reverse geolocation lookup failed");
+    }
+
+    const data = await response.json();
+
+    // return nearest city (WeatherAPI always returns array)
+    return data[0] || null;
+
+  } catch (error) {
+    console.error("Reverse Geo Lookup Error:", error);
+    return null;
+  }
+};
+
+
 export const getWeatherData = async (location) => {
 
   

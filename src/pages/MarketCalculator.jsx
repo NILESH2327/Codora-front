@@ -112,6 +112,13 @@ const DISTRICT_COORDINATES = {
   Kasaragod: { lat: 12.5102, lng: 74.9852 },
 };
 
+// --- helper: pick vehicle by quantity ---
+const pickVehicleForQuantity = (qty) => {
+  if (!qty || qty <= 0) return VEHICLES[0];
+  const sorted = [...VEHICLES].sort((a, b) => a.capacity - b.capacity);
+  return sorted.find((v) => v.capacity >= qty) || sorted[sorted.length - 1];
+};
+
 const LocationPickerMap = ({ onLocationSelect, selectedPos }) => {
   const RecenterMap = ({ lat, lng }) => {
     const map = useMap();
@@ -374,7 +381,9 @@ const FindMandi = () => {
                   className="w-full pl-10 pr-3 p-3 bg-gray-50 border border-gray-200 rounded-xl font-medium focus:ring-2 focus:ring-green-500 outline-none"
                   value={quantity}
                   onChange={(e) => {
-                    setQuantity(Number(e.target.value));
+                    const q = Number(e.target.value);
+                    setQuantity(q);
+                    setSelectedVehicle(pickVehicleForQuantity(q));
                     setResults([]);
                   }}
                 />
@@ -529,9 +538,7 @@ const FindMandi = () => {
                 </div>
                 <div className="flex justify-between items-center mb-2 text-gray-800 font-bold">
                   <span>x {quantity} Quintals</span>
-                  <span>
-                    ₹{results[0].totalRevenue.toLocaleString()}
-                  </span>
+                  <span>₹{results[0].totalRevenue.toLocaleString()}</span>
                 </div>
 
                 <div className="flex justify-between items-center mb-3 text-red-500">

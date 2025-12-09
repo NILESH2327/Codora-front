@@ -152,8 +152,8 @@ const ChatbotPanel = () => {
     <div className="w-80 sm:w-96 h-[28rem] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 border-b bg-green-600 text-white">
-        <h2 className="font-semibold text-sm">{t("chatTitle")}</h2>
-        <p className="text-xs opacity-80">{t("chatSubtitle")}</p>
+        <h2 className="font-semibold text-sm">{t("AgriSmart Chat")}</h2>
+        <p className="text-xs opacity-80">{t("The Farmer’s AI Friend")}</p>
       </div>
 
       {/* Messages */}
